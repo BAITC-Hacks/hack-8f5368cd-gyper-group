@@ -24,140 +24,240 @@
               mono: ["Space Mono", "monospace"],
             },
             colors: {
-              ink: "#252622",
-              mint: "#5e7338",
+              ink: "#263b39",
+              mint: "#24766b",
               coral: "#a34c3c",
-              paper: "#f0f2e9",
+              paper: "#f0f4ed",
             },
           },
         },
       };
     </script>
     <style>
-      :root { color-scheme: light; --canvas: #f6f5f0; --ink: #252622; --line: #dcded5; --accent: #dcf588; }
-      body { margin: 0; background: var(--canvas); color: var(--ink); font-family: "Manrope", sans-serif; -webkit-font-smoothing: antialiased; }
-      ::selection { background: var(--accent); color: var(--ink); }
-      button, input, a { transition: background-color .18s, color .18s; }
-      button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid #5e7338; outline-offset: 4px; }
-      button:disabled { cursor: not-allowed; opacity: .45; }
-      .app-shell { max-width: 1440px; margin: auto; padding: 0 52px; }
-      .app-header { min-height: 100px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--line); }
-      .brand-icon { background: var(--ink); color: var(--accent); border-radius: 50%; }
-      .app-header h1 { font-size: 19px; letter-spacing: -.06em; }
-      .app-header p { margin-top: 3px; font-size: 10px; color: #6a6c63; }
-      .connection-pill { gap: 10px; font-size: 11px; }
-      #reset-button { margin-left: 20px; border: 1px solid var(--line); border-radius: 50%; background: transparent; width: 40px; height: 40px; }
-      #reset-button:hover { background: var(--accent); }
-      .intro { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 30px; padding: 44px 0 40px; }
-      .eyebrow { font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: .08em; color: #6a6c63; text-transform: uppercase; }
-      .intro h2 { margin-top: 16px; font-size: clamp(48px, 6.8vw, 92px); line-height: 1; font-weight: 500; letter-spacing: -.075em; }
-      .intro h2 span { color: #8a8e7e; }
-      .intro-note { max-width: 240px; padding-bottom: 5px; font-size: 12px; line-height: 1.8; color: #64665d; }
-      .intro-note p + p { margin-top: 16px; font-family: "Space Mono", monospace; font-size: 10px; color: #34372e; }
-      .workspace { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 0 32px; }
-      .workspace > section { min-width: 0; height: 510px; min-height: 0; border: 0; border-radius: 0; }
-      .chat-panel { background: #fff; border-radius: 4px 40px 4px 4px !important; }
-      .workspace > section > div:first-child { border-bottom: 0; padding: 24px 28px; }
-      .section-number { margin-right: 12px; font-family: "Space Mono", monospace; color: #818678; font-size: 10px; font-weight: 400; }
-      #conversation { padding: 12px 28px 24px; min-height: 0; }
-      #conversation > div { overflow-wrap: anywhere; border-radius: 0; padding: 16px 0; background: transparent; }
-      #conversation > div b { display: block; margin-bottom: 10px; font-size: 10px; font-weight: 500; color: #72776a; }
-      #conversation > div.ml-auto { background: #eff3e6; padding: 16px 20px; border-radius: 18px 18px 0 18px; }
-      #conversation > div:first-child { font-size: clamp(22px, 2.1vw, 30px); letter-spacing: -.045em; line-height: 1.4; max-width: 420px; }
-      .composer { margin: 0 20px 20px; padding: 12px; background: var(--canvas); border: 1px solid #e9eae3; border-radius: 22px; }
-      .composer-row { display: flex; align-items: center; gap: 8px; }
-      .language-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 0 10px 10px; border-bottom: 1px solid #e1e4d9; margin-bottom: 4px; }
-      .language-controls label { display: flex; align-items: center; gap: 8px; font-size: 10px; color: #68715b; }
-      .language-controls select { max-width: 100%; border: 0; border-radius: 4px; padding: 6px; background: #e8eddf; color: #34372e; font: inherit; font-size: 11px; }
-      .language-controls select:focus-visible { outline: 2px solid #5e7338; outline-offset: 2px; }
+      :root { color-scheme: light; --ink: #263b39; --accent: #24766b; --line: #e3e9e5; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #e5ebe7; color: var(--ink); font-family: "Manrope", sans-serif; -webkit-font-smoothing: antialiased; }
+      button, input, select, a, summary { -webkit-tap-highlight-color: transparent; }
+      button, a { transition: background-color .15s, color .15s; }
+      button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      button:disabled, select:disabled { opacity: .45; cursor: not-allowed; }
+      .messenger { display: grid; grid-template-columns: 310px minmax(0, 1fr); max-width: 1450px; height: calc(100dvh - 48px); min-height: 600px; margin: 24px auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 16px 60px #24443b0d; border: 1px solid #fff; }
+      .sidebar { display: flex; flex-direction: column; min-height: 0; overflow-y: auto; border-right: 1px solid var(--line); padding: 30px 18px 20px; background: #fbfcfa; }
+      .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 0 10px 34px; }
+      .brand-mark { display: grid; place-items: center; width: 37px; height: 37px; border-radius: 12px; color: white; background: var(--ink); }
+      .sidebar-brand h1 { font-size: 20px; font-weight: 700; letter-spacing: -.8px; }
+      .brand-period { color: #84a66d; }
+      .sidebar-brand p { margin-top: 3px; font-size: 10px; color: #7b8c84; }
+      .sidebar-title { display: flex; justify-content: space-between; padding: 0 10px 15px; align-items: center; }
+      .sidebar-title h2 { font-size: 14px; font-weight: 700; }
+      .sidebar-title > span { font-size: 10px; color: #8b9891; }
+      .chat-preview { display: flex; align-items: center; gap: 12px; padding: 17px 12px; border-radius: 15px; background: #e7efea; color: inherit; }
+      .chat-preview:hover { background: #dce9e1; }
+      .avatar { position: relative; flex-shrink: 0; display: grid; place-items: center; width: 45px; height: 45px; background: #d9e7b8; color: #3c6141; font-size: 31px; font-weight: 700; border-radius: 16px; line-height: 1; }
+      .avatar-dot { position: absolute; width: 10px; height: 10px; border: 2px solid #e7efea; background: #769b58; border-radius: 50%; bottom: -1px; right: -1px; }
+      .preview-copy { min-width: 0; flex: 1; }
+      .preview-copy strong { display: block; font-size: 12px; font-weight: 700; }
+      .preview-copy strong i, .contact h2 i { color: #6b9581; font-size: 10px; margin-left: 3px; }
+      .preview-copy > span { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; margin-top: 5px; font-size: 10px; color: #819088; }
+      .preview-arrow { font-size: 11px; color: #93a398; }
+      .sidebar-description { padding: 34px 12px; }
+      .small-label { font-size: 8px; letter-spacing: 1.6px; color: #839087; }
+      .sidebar-description p { font-size: 20px; line-height: 1.5; letter-spacing: -.6px; margin-top: 12px; color: #687e70; }
+      .language-tags { display: flex; gap: 6px; margin-top: 18px; }
+      .language-tags span { border: 1px solid #e2e8e0; border-radius: 6px; padding: 4px 7px; font-size: 9px; color: #7a8a7e; }
+      .conversation-details { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+      .conversation-details summary { display: flex; align-items: center; justify-content: space-between; padding: 18px 10px; cursor: pointer; list-style: none; font-size: 11px; }
+      .conversation-details summary::-webkit-details-marker { display: none; }
+      .conversation-details summary span i { margin-right: 8px; color: #799080; }
+      .conversation-details summary > i { font-size: 9px; }
+      .conversation-details[open] summary > i { transform: rotate(180deg); }
+      .details-content { padding: 0 6px 14px; }
+      #route-panel { border: 0; background: transparent; min-height: 0; }
+      #route-panel > div:first-child { padding: 12px 0; }
+      #route-panel h2 { font-size: 11px; }
+      .section-number { display: none; }
+      #router-mode { border-radius: 4px; font-size: 8px; }
+      #trace-panel { padding: 12px 0; overflow-wrap: anywhere; }
+      #trace-panel > .grid { padding: 10px 0; font-size: 11px; line-height: 1.8; }
+      #trace-panel h3 { min-width: 0; font-size: 14px; }
+      #trace-panel h3 + span { flex-shrink: 0; margin-left: 8px; }
+      .route-symbol { display: none; }
+      .latency > div { padding: 10px 2px; border-right: 0; font-size: 8px; }
+      .details-content aside { min-height: 0; gap: 10px; }
+      .details-content aside section { border: 0; border-top: 1px solid var(--line); background: transparent; padding: 14px 0; }
+      #scenario-id { font-size: 14px; }
+      #scenario-label, #operator-context { overflow-wrap: anywhere; font-size: 11px; }
+      .sidebar-footer { display: flex; align-items: center; gap: 12px; margin-top: auto; padding: 30px 12px 4px; font-size: 10px; line-height: 1.8; color: #829086; }
+      .sidebar-footer > i { font-size: 25px; color: #a8b6a5; }
+      .sidebar-footer strong { font-weight: 500; color: #60796a; }
+      .chat-panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: #f1f4ed; }
+      .chat-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-shrink: 0; padding: 21px 30px; background: #ffffffef; border-bottom: 1px solid var(--line); }
+      .contact { display: flex; align-items: center; gap: 12px; min-width: 0; }
+      .avatar-small { width: 42px; height: 42px; font-size: 28px; border-radius: 50%; }
+      .contact h2 { font-size: 14px; font-weight: 700; }
+      .contact p { font-size: 10px; color: #8b9991; margin-top: 4px; }
+      .connection-pill { font-size: 10px; }
+      #connection-dot { width: 6px; height: 6px; }
+      #reset-button { background: #f3f6f1; border: 0; border-radius: 50%; width: 36px; height: 36px; color: #6f8376; }
+      #reset-button:hover { background: #e0e9de; }
+      .chat-body { display: flex; flex-direction: column; flex: 1; min-height: 0; padding-top: 24px; background-image: radial-gradient(#78957c16 .8px, transparent .8px); background-size: 20px 20px; }
+      .chat-day { align-self: center; padding: 6px 14px; background: #e2e9dc; border-radius: 7px; font-size: 9px; color: #6d806d; }
+      .chat-notice { align-self: center; max-width: 460px; margin: 14px 24px 0; text-align: center; font-size: 10px; line-height: 1.8; color: #80907e; }
+      .chat-notice i { margin-right: 4px; }
+      #conversation { flex: 1; min-height: 0; overflow-y: auto; padding: 32px 36px; }
+      #conversation > div { width: fit-content; max-width: 78%; margin-bottom: 14px; padding: 14px 18px; border: 1px solid #e4e9df; border-radius: 0 17px 17px 17px; background: white; font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; box-shadow: 0 2px 3px #28432c04; }
+      #conversation > div b { display: block; font-size: 10px; color: #638878; font-weight: 700; margin-bottom: 6px; }
+      #conversation > div.ml-auto { margin-left: auto; background: #dcebd9; border-color: #d5e5d2; border-radius: 17px 0 17px 17px; }
+      .message-note { display: block; font-size: 9px; color: #8d9c90; margin-top: 12px; }
+      .composer-area { flex-shrink: 0; padding: 0 28px 20px; background: #f1f4ed; }
+      .composer-meta { display: flex; justify-content: space-between; gap: 10px; padding: 9px 6px; font-size: 9px; color: #8b9b88; }
+      .composer-meta i { margin-right: 4px; }
+      .composer { padding: 12px 14px; background: white; border-radius: 18px; border: 1px solid #e2e8dd; }
+      .language-controls { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 0 4px 9px; }
+      .language-controls label { display: flex; align-items: center; gap: 6px; font-size: 9px; color: #8d9a8e; }
+      .language-controls select { border: 0; background: #f0f4ed; color: #617b66; font: inherit; border-radius: 5px; padding: 5px 6px; max-width: 100%; }
       .language-controls [hidden] { display: none; }
-      #language-hint { display: block; margin-top: 4px; font-size: 10px; line-height: 1.6; color: #73796a; }
-      #text-input { border: 0; background: transparent; padding: 14px 10px; font-size: 13px; }
-      #text-input::placeholder { color: #74796c; }
-      #send-button { background: var(--ink); color: white; border-radius: 50%; width: 44px; height: 44px; }
-      #send-button:hover { background: #505747; }
-      #mic-button { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--accent); color: var(--ink); }
-      #mic-button:hover { background: #c8e276; }
-      #mic-button.pulse-ring { background: #252622; color: var(--accent); animation: pulse 1.3s infinite; }
-      .composer-hint { border-top: 1px solid #e1e4d9; padding: 10px 10px 0; margin-top: 8px; }
-      #voice-status { font-size: 10px; line-height: 1.6; color: #73796a; }
-      #route-panel { background: transparent; }
-      #route-panel > div:first-child { padding: 24px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); }
-      #router-mode { border: 1px solid #c9cfba; border-radius: 3px; background: #eaf0dd; color: #4f6236; font-size: 9px; }
-      #trace-panel { padding: 24px 0; min-height: 0; overflow-wrap: anywhere; }
-      #trace-panel > .grid { min-height: 100%; align-content: center; justify-items: start; text-align: left; padding: 10px 0; color: #74796c; }
-      .route-symbol { width: 72px; height: 72px; display: grid; place-items: center; border: 1px solid #b5bcaa; border-radius: 50%; margin-bottom: 28px; font-size: 26px; color: #59634c; }
-      #trace-panel h3 { min-width: 0; font-size: 20px; }
-      #trace-panel h3 + span { flex-shrink: 0; margin-left: 12px; }
-      .latency { border-color: var(--line); }
-      .latency > div { padding: 16px 4px; border: 0; }
-      .latency b { display: block; margin-top: 6px; font-weight: 400; color: #555d4d; }
-      .workspace aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1.2fr 1fr .8fr; gap: 0; min-height: 0; margin-top: 34px; border-top: 1px solid var(--line); }
-      .workspace aside > section { min-width: 0; border: 0; background: transparent; padding: 25px 28px; border-right: 1px solid var(--line); }
-      .workspace aside > section:first-child { padding-left: 0; }
-      .workspace aside > section:last-child { border-right: 0; padding-right: 0; }
-      #scenario-id { font-size: 20px; font-weight: 500; letter-spacing: -.04em; }
-      #scenario-label, #operator-context { color: #707568; font-size: 12px; line-height: 1.8; overflow-wrap: anywhere; }
-      #confidence { font-size: 10px; color: #68715b; }
-      #confidence-bar { background: #899a68; }
-      .app-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 22px 0; border-top: 1px solid var(--line); font-size: 10px; color: #777d6e; }
-      .scroll-area { scrollbar-width: thin; scrollbar-color: #c9cebf transparent; }
+      .composer-row { display: flex; align-items: center; gap: 8px; }
+      #text-input { padding: 12px 4px; background: transparent; border: 0; font-size: 13px; }
+      #text-input::placeholder { color: #9ba799; }
+      #mic-button, #send-button { border: 0; width: 42px; height: 42px; border-radius: 13px; }
+      #mic-button { background: #eef3e8; color: #789265; }
+      #send-button { background: var(--accent); color: white; }
+      #mic-button:hover { background: #e0e9d6; }
+      #send-button:hover { background: #195c54; }
+      #mic-button.pulse-ring { background: var(--accent); color: white; animation: pulse 1.2s infinite; }
+      .composer-hint { margin-top: 7px; padding: 8px 4px 0; border-top: 1px solid #f0f3ed; line-height: 1.6; }
+      #voice-status, #language-hint { display: block; font-size: 9px; color: #899880; }
+      .scroll-area, .sidebar { scrollbar-width: thin; scrollbar-color: #cbd8c9 transparent; }
       .trace-flash { animation: flash .45s ease-out; }
-      @keyframes flash { from { background: #eaf0dd; } to { background: transparent; } }
-      @keyframes pulse { 50% { box-shadow: 0 0 0 6px #dcf58870; } }
-      @media (max-width: 1000px) {
-        .app-shell { padding: 0 28px; }
-        .intro { padding: 36px 0; }
-        .intro h2 { font-size: 64px; }
-        .intro-note { max-width: 200px; }
-        .workspace { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 0 24px; }
-      }
+      @keyframes flash { from { background: #dcebd9; } to { background: transparent; } }
+      @keyframes pulse { 50% { box-shadow: 0 0 0 5px #24766b22; } }
+      @media (max-width: 1500px) { .messenger { margin: 18px; height: calc(100dvh - 36px); } }
+      @media (max-width: 950px) { .messenger { grid-template-columns: 250px minmax(0, 1fr); } .sidebar { padding: 24px 12px; } .preview-arrow { display: none; } .chat-header { padding: 18px; } .contact p { max-width: 140px; } #conversation { padding: 24px; } .composer-area { padding: 0 16px 16px; } }
       @media (max-width: 700px) {
-        .app-shell { padding: 0 18px; }
-        .app-header { padding: 20px 0; min-height: 0; gap: 16px; }
-        .app-header h1 { font-size: 17px; }
-        .connection-pill { gap: 6px; }
-        #reset-button { margin-left: 6px; width: 34px; height: 34px; }
-        .intro { grid-template-columns: 1fr; gap: 22px; padding: 30px 0; }
-        .intro h2 { font-size: clamp(46px, 11vw, 72px); }
-        .intro-note { max-width: 100%; }
-        .intro-note p + p { margin-top: 8px; }
-        .workspace { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-        .workspace > section { height: 420px; }
-        .workspace > #route-panel { height: 340px; }
-        .workspace > section > div:first-child { padding: 22px 18px; }
-        #route-panel > div:first-child { padding: 20px 0; }
-        #conversation { padding: 0 20px 20px; }
-        .composer { margin: 0 12px 12px; padding: 8px; }
-        #text-input { padding-left: 4px; font-size: 12px; }
-        #send-button, #mic-button { width: 40px; height: 40px; }
-        .workspace aside { grid-template-columns: 1fr; margin-top: 0; }
-        .workspace aside > section { padding: 22px 0; border-right: 0; border-bottom: 1px solid var(--line); }
-        .workspace aside > section:last-child { border-bottom: 0; }
+        .messenger { display: flex; flex-direction: column; margin: 0; height: 100dvh; min-height: 0; border: 0; border-radius: 0; }
+        .sidebar { flex-shrink: 0; overflow: visible; padding: 0; border: 0; }
+        .sidebar-brand, .sidebar-title, .chat-preview, .sidebar-description, .sidebar-footer { display: none; }
+        .conversation-details { border-top: 0; }
+        .conversation-details summary { padding: 10px 18px; font-size: 10px; }
+        .details-content { max-height: 35dvh; overflow-y: auto; padding: 0 18px; }
+        .chat-panel { flex: 1; }
+        .chat-header { padding: 13px 16px; gap: 8px; }
+        .contact { gap: 9px; } .contact h2 { font-size: 12px; } .contact p { font-size: 9px; }
+        .avatar-small { width: 35px; height: 35px; font-size: 24px; }
+        .connection-pill { gap: 4px; font-size: 9px; }
+        #reset-button { margin-left: 4px; width: 30px; height: 30px; }
+        .chat-body { padding-top: 14px; } .chat-notice { font-size: 9px; margin-top: 10px; }
+        #conversation { padding: 20px 16px; } #conversation > div { max-width: 90%; padding: 12px 14px; font-size: 12px; }
+        .composer-area { padding: 0 10px max(10px, env(safe-area-inset-bottom)); } .composer { padding: 10px; border-radius: 15px; }
+        #text-input { font-size: 16px; } #mic-button, #send-button { width: 38px; height: 38px; }
+        .language-controls { gap: 5px; } .composer-meta { font-size: 8px; }
       }
       @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
     </style>
   </head>
   <body class="min-h-screen text-ink">
-    <main
-      class="app-shell"
-    >
-      <header
-        class="app-header"
-      >
-        <div class="flex items-center gap-3">
+    <main class="messenger">
+      <aside class="sidebar" aria-label="Диалоги и информация">
+        <div class="sidebar-brand"><span class="brand-mark"><i class="fa-solid fa-route" aria-hidden="true"></i></span><div><h1>Voice Router<span class="brand-period">.</span></h1><p>Ваш банк на связи</p></div></div>
+        <div class="sidebar-title"><h2>Сообщения</h2><span>01</span></div>
+        <a class="chat-preview" href="#text-input" aria-label="Перейти к диалогу с Halyk Assistant">
+          <span class="avatar">h<span class="avatar-dot"></span></span>
+          <span class="preview-copy"><strong>Halyk Assistant <i class="fa-solid fa-circle-check" aria-hidden="true"></i></strong><span>Сәлеметсіз бе! Чем могу помочь?</span></span>
+          <i class="fa-solid fa-angle-right preview-arrow" aria-hidden="true"></i>
+        </a>
+        <div class="sidebar-description"><span class="small-label">РЯДОМ, КОГДА НУЖНО</span><p>О картах, переводах<br />и всём, что важно вам.</p><div class="language-tags"><span>Русский</span><span>Қазақша</span><span>RU + KZ</span></div></div>
+        <details class="conversation-details">
+          <summary><span><i class="fa-solid fa-sliders" aria-hidden="true"></i> Детали диалога</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+          <div class="details-content">
+        <section id="route-panel" tabindex="-1"
+          class="flex min-h-[420px] flex-col border border-ink/10 bg-white"
+        >
           <div
-            class="brand-icon grid h-10 w-10 place-items-center text-lg"
+            class="flex items-center justify-between border-b border-ink/10 px-5 py-4"
           >
-            <i class="fa-solid fa-route"></i>
+            <h2 class="text-sm font-semibold"><span class="section-number">02 /</span>За словами</h2>
+            <span
+              id="router-mode"
+              class="border border-mint/30 bg-mint/10 px-2 py-1 font-mono text-[10px] font-bold text-mint"
+              >READY</span
+            >
           </div>
-          <div>
-            <h1 class="text-lg font-semibold tracking-tight">Voice Router</h1>
-            <p class="text-xs font-medium text-ink/60">
-              Halyk Bank · голосовой ассистент
+          <div id="trace-panel" class="scroll-area flex-1 overflow-y-auto p-5">
+            <div
+              class="grid place-items-center py-16 text-center text-sm text-ink/45"
+            >
+              <span class="route-symbol" aria-hidden="true">↗</span>
+              <p>Каждый вопрос находит свой путь.<br /><span class="text-xs">Здесь будут маршрут и объяснение выбора.</span></p>
+            </div>
+          </div>
+          <div
+            class="latency grid grid-cols-5 border-t border-ink/10 font-mono text-[10px]"
+          >
+            <div class="border-r border-ink/10 p-3">
+              <span class="block text-ink/45">STT</span><b id="stt-ms">0ms</b>
+            </div>
+            <div class="border-r border-ink/10 p-3">
+              <span class="block text-ink/45">ROUTER</span
+              ><b id="router-ms">0ms</b>
+            </div>
+            <div class="border-r border-ink/10 p-3">
+              <span class="block text-ink/45">EXEC</span><b id="exec-ms">0ms</b>
+            </div>
+            <div class="border-r border-ink/10 p-3">
+              <span class="block text-ink/45">TTS</span><b id="tts-ms">0ms</b>
+            </div>
+            <div class="p-3">
+              <span class="block text-ink/45">TOTAL</span
+              ><b id="total-ms">0ms</b>
+            </div>
+          </div>
+        </section>
+        <aside class="flex min-w-0 min-h-[420px] flex-col gap-5">
+          <section class="border border-ink/10 bg-white p-5">
+            <p class="font-mono text-[10px] tracking-widest text-mint">
+              03 / ТЕКУЩИЙ МАРШРУТ
             </p>
+            <h2 id="scenario-id" class="mt-3 break-words text-lg font-semibold tracking-tight">
+              Пока чистый лист
+            </h2>
+            <p id="scenario-label" class="mt-2 text-sm leading-6 text-ink/60">
+              Маршрут появится после реплики
+            </p>
+            <div class="mt-5 h-1.5 overflow-hidden rounded-full bg-ink/5">
+              <div
+                id="confidence-bar"
+                class="h-full w-0 bg-mint transition-all"
+              ></div>
+            </div>
+            <p id="confidence" class="mt-2 font-mono text-xs">confidence: --</p>
+          </section>
+          <section class="flex-1 border border-ink/10 bg-white p-5">
+            <h2 class="text-sm font-semibold"><span class="section-number">04 /</span>Если нужен человек</h2>
+            <div
+              id="operator-context"
+              class="mt-3 text-xs leading-5 text-ink/60"
+            >
+              Передача оператору появится для жалобы, мошенничества или по
+              запросу клиента.
+            </div>
+          </section>
+          <section class="border border-ink/10 bg-white p-5">
+            <p class="text-xs font-medium text-ink/70">
+              <i class="fa-solid fa-shield-halved mr-2"></i>Безопасный диалог
+            </p>
+            <p class="mt-1 text-xs leading-5 text-ink/70">
+              Не запрашивайте PIN, CVV и SMS-коды. Данные в демо синтетические.
+            </p>
+          </section>
+        </aside>
           </div>
-        </div>
+        </details>
+        <div class="sidebar-footer"><i class="fa-regular fa-comment-dots" aria-hidden="true"></i><span>Меньше ожидания.<br /><strong>Больше понимания.</strong></span></div>
+      </aside>
+      <section class="chat-panel" aria-label="Чат с Halyk Assistant">
+        <header class="chat-header">
+          <div class="contact"><span class="avatar avatar-small">h</span><div><h2>Halyk Assistant <i class="fa-solid fa-circle-check" aria-hidden="true"></i></h2><p>Голосовой и текстовый помощник</p></div></div>
         <div class="connection-pill flex items-center gap-2 text-xs font-medium text-ink/70">
           <span
             id="connection-dot"
@@ -172,37 +272,16 @@
             <i class="fa-solid fa-rotate-left"></i>
           </button>
         </div>
-      </header>
-
-      <section class="intro" aria-labelledby="hero-title">
-        <div>
-          <p class="eyebrow">Halyk / Пространство диалога</p>
-          <h2 id="hero-title">Слово <span>за вами.</span></h2>
+        </header>
+        <div class="chat-body">
+          <div class="chat-day">Начало диалога</div>
+          <div class="chat-notice"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Не сообщайте PIN, CVV и SMS-коды. Это демо с синтетическими данными.</div>
+          <div id="conversation" role="log" aria-label="Сообщения" aria-live="polite" class="scroll-area">
+            <div class="message message-assistant"><b>Halyk Assistant</b><p>Сәлеметсіз бе! 👋<br />Чем могу помочь сегодня?</p><span class="message-note">Напишите вопрос или запишите его голосом</span></div>
+          </div>
         </div>
-        <div class="intro-note"><p>Скажите, что вас интересует.<br />Мы поможем с остальным.</p><p>RU / KZ &nbsp; ↘ Голосом или текстом</p></div>
-      </section>
-      <div class="workspace">
-        <section
-          class="chat-panel flex min-h-[420px] flex-col border border-ink/10 bg-white"
-        >
-          <div
-            class="flex items-center justify-between border-b border-ink/10 px-5 py-4"
-          >
-            <h2 class="text-sm font-semibold"><span class="section-number">01 /</span>Диалог</h2>
-            <span id="turn-count" class="font-mono text-[10px] text-ink/55"
-              >0 / 10 turns</span
-            >
-          </div>
-          <div
-            id="conversation"
-            class="scroll-area flex-1 space-y-3 overflow-y-auto p-5"
-          >
-            <div
-              class="max-w-[90%] rounded-xl bg-paper p-4 text-sm leading-6"
-            >
-              <b>Voice Router:</b> Сәлеметсіз бе! Чем могу помочь?
-            </div>
-          </div>
+        <div class="composer-area">
+          <div class="composer-meta"><span><i class="fa-regular fa-comment" aria-hidden="true"></i> Ваш диалог с Halyk</span><span id="turn-count">0 / 10 turns</span></div>
           <div class="composer">
             <div class="language-controls">
               <label for="language-select">Язык диалога
@@ -248,92 +327,8 @@
 
             </div>
           </div>
-        </section>
-
-        <section id="route-panel" tabindex="-1"
-          class="flex min-h-[420px] flex-col border border-ink/10 bg-white"
-        >
-          <div
-            class="flex items-center justify-between border-b border-ink/10 px-5 py-4"
-          >
-            <h2 class="text-sm font-semibold"><span class="section-number">02 /</span>За словами</h2>
-            <span
-              id="router-mode"
-              class="border border-mint/30 bg-mint/10 px-2 py-1 font-mono text-[10px] font-bold text-mint"
-              >READY</span
-            >
-          </div>
-          <div id="trace-panel" class="scroll-area flex-1 overflow-y-auto p-5">
-            <div
-              class="grid place-items-center py-16 text-center text-sm text-ink/45"
-            >
-              <span class="route-symbol" aria-hidden="true">↗</span>
-              <p>Каждый вопрос находит свой путь.<br /><span class="text-xs">Здесь будут маршрут и объяснение выбора.</span></p>
-            </div>
-          </div>
-          <div
-            class="latency grid grid-cols-5 border-t border-ink/10 font-mono text-[10px]"
-          >
-            <div class="border-r border-ink/10 p-3">
-              <span class="block text-ink/45">STT</span><b id="stt-ms">0ms</b>
-            </div>
-            <div class="border-r border-ink/10 p-3">
-              <span class="block text-ink/45">ROUTER</span
-              ><b id="router-ms">0ms</b>
-            </div>
-            <div class="border-r border-ink/10 p-3">
-              <span class="block text-ink/45">EXEC</span><b id="exec-ms">0ms</b>
-            </div>
-            <div class="border-r border-ink/10 p-3">
-              <span class="block text-ink/45">TTS</span><b id="tts-ms">0ms</b>
-            </div>
-            <div class="p-3">
-              <span class="block text-ink/45">TOTAL</span
-              ><b id="total-ms">0ms</b>
-            </div>
-          </div>
-        </section>
-
-        <aside class="flex min-w-0 min-h-[420px] flex-col gap-5">
-          <section class="border border-ink/10 bg-white p-5">
-            <p class="font-mono text-[10px] tracking-widest text-mint">
-              03 / ТЕКУЩИЙ МАРШРУТ
-            </p>
-            <h2 id="scenario-id" class="mt-3 break-words text-lg font-semibold tracking-tight">
-              Пока чистый лист
-            </h2>
-            <p id="scenario-label" class="mt-2 text-sm leading-6 text-ink/60">
-              Маршрут появится после реплики
-            </p>
-            <div class="mt-5 h-1.5 overflow-hidden rounded-full bg-ink/5">
-              <div
-                id="confidence-bar"
-                class="h-full w-0 bg-mint transition-all"
-              ></div>
-            </div>
-            <p id="confidence" class="mt-2 font-mono text-xs">confidence: --</p>
-          </section>
-          <section class="flex-1 border border-ink/10 bg-white p-5">
-            <h2 class="text-sm font-semibold"><span class="section-number">04 /</span>Если нужен человек</h2>
-            <div
-              id="operator-context"
-              class="mt-3 text-xs leading-5 text-ink/60"
-            >
-              Передача оператору появится для жалобы, мошенничества или по
-              запросу клиента.
-            </div>
-          </section>
-          <section class="border border-ink/10 bg-white p-5">
-            <p class="text-xs font-medium text-ink/70">
-              <i class="fa-solid fa-shield-halved mr-2"></i>Безопасный диалог
-            </p>
-            <p class="mt-1 text-xs leading-5 text-ink/70">
-              Не запрашивайте PIN, CVV и SMS-коды. Данные в демо синтетические.
-            </p>
-          </section>
-        </aside>
-      </div>
-      <footer class="app-footer"><span>Voice Router © 2026</span><span>Меньше шума. Больше понимания.</span><span>Halyk Bank / AI assistant</span></footer>
+        </div>
+      </section>
     </main>
     <script>
       const ui = {
