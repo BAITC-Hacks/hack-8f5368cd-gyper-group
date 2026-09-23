@@ -1,15 +1,5 @@
-# Python
+.env
+backend/.env
 __pycache__/
 *.py[cod]
-.venv/
-backend/.env
-
-# Node.js
-frontend/node_modules/
-frontend/dist/
-frontend/.env
-
-# Editor and OS files
-.vscode/
-.idea/
-.DS_Store
+.pytest_cache/

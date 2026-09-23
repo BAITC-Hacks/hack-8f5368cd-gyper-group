@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice Router | Halyk Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Manrope", "sans-serif"],
+              mono: ["Space Mono", "monospace"],
+            },
+            colors: {
+              ink: "#18322b",
+              mint: "#00a884",
+              coral: "#e86f51",
+              paper: "#f7f5ee",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background-color: #f7f5ee;
+        background-image: radial-gradient(#c9d8ce 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+      .scroll-area::-webkit-scrollbar {
+        width: 5px;
+      }
+      .scroll-area::-webkit-scrollbar-thumb {
+        background: #b8c8bd;
+        border-radius: 3px;
+      }
+      .trace-flash {
+        animation: flash 0.45s ease-out;
+      }
+      @keyframes flash {
+        0% {
+          background: #d8f3e9;
+        }
+        100% {
+          background: transparent;
+        }
+      }
+      .pulse-ring {
+        animation: pulse 1.25s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.12);
+          opacity: 0.65;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen text-ink">
+    <main
+      class="mx-auto grid min-h-screen max-w-[1600px] grid-rows-[auto_1fr] p-4 lg:p-6"
+    >
+      <header
+        class="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-ink/15 pb-4"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="grid h-10 w-10 place-items-center bg-mint text-xl text-white"
+          >
+            <i class="fa-solid fa-route"></i>
+          </div>
+          <div>
+            <h1 class="text-lg font-extrabold tracking-wide">VOICE ROUTER</h1>
+            <p class="text-xs font-medium text-ink/60">
+              Halyk Bank · supervisor console
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-bold">
+          <span
+            id="connection-dot"
+            class="h-2.5 w-2.5 rounded-full bg-amber-400"
+          ></span
+          ><span id="connection-status">connecting</span>
+          <button
+            id="reset-button"
+            title="Новый диалог"
+            class="ml-3 h-9 w-9 border border-ink/20 hover:bg-ink hover:text-white"
+          >
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+        </div>
+      </header>
+
+      <div
+        class="grid min-h-0 gap-4 xl:grid-cols-[minmax(390px,1fr)_minmax(460px,1.35fr)_minmax(330px,.8fr)]"
+      >
+        <section
+          class="flex min-h-[420px] flex-col border border-ink/15 bg-white/80"
+        >
+          <div
+            class="flex items-center justify-between border-b border-ink/10 px-4 py-3"
+          >
+            <h2 class="text-sm font-extrabold">Диалог</h2>
+            <span id="turn-count" class="font-mono text-[10px] text-ink/55"
+              >0 / 10 turns</span
+            >
+          </div>
+          <div
+            id="conversation"
+            class="scroll-area flex-1 space-y-3 overflow-y-auto p-4"
+          >
+            <div
+              class="max-w-[90%] border-l-2 border-mint bg-mint/10 p-3 text-sm leading-6"
+            >
+              <b>Voice Router:</b> Сәлеметсіз бе! Чем могу помочь?
+            </div>
+          </div>
+          <div class="border-t border-ink/10 p-3">
+            <div class="flex gap-2">
+              <input
+                id="text-input"
+                class="min-w-0 flex-1 border border-ink/25 bg-paper px-3 py-3 text-sm outline-none focus:border-mint"
+                placeholder="Введите реплику клиента..."
+              />
+              <button
+                id="send-button"
+                title="Отправить"
+                class="h-11 w-11 bg-ink text-white hover:bg-mint"
+              >
+                <i class="fa-solid fa-arrow-up"></i>
+              </button>
+            </div>
+            <div class="mt-3 flex items-center justify-between">
+              <span id="voice-status" class="text-xs text-ink/55"
+                >Текстовый канал готов</span
+              >
+              <button
+                id="mic-button"
+                title="Голосовой ввод"
+                class="relative grid h-11 w-11 place-items-center border border-mint text-mint hover:bg-mint hover:text-white"
+              >
+                <i class="fa-solid fa-microphone"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="flex min-h-[420px] flex-col border border-ink/15 bg-white/80"
+        >
+          <div
+            class="flex items-center justify-between border-b border-ink/10 px-4 py-3"
+          >
+            <h2 class="text-sm font-extrabold">Объяснимость маршрута</h2>
+            <span
+              id="router-mode"
+              class="border border-mint/30 bg-mint/10 px-2 py-1 font-mono text-[10px] font-bold text-mint"
+              >READY</span
+            >
+          </div>
+          <div id="trace-panel" class="scroll-area flex-1 overflow-y-auto p-4">
+            <div
+              class="grid place-items-center py-16 text-center text-sm text-ink/45"
+            >
+              <i class="fa-solid fa-wave-square mb-3 text-3xl"></i>
+              <p>Отправьте реплику, чтобы увидеть<br />решение LLM-router.</p>
+            </div>
+          </div>
+          <div
+            class="grid grid-cols-5 border-t border-ink/10 font-mono text-[10px]"
+          >
+            <div class="border-r border-ink/10 p-3">
+              <span class="block text-ink/45">STT</span><b id="stt-ms">0ms</b>
+            </div>
+            <div class="border-r border-ink/10 p-3">
+              <span class="block text-ink/45">ROUTER</span
+              ><b id="router-ms">0ms</b>
+            </div>
+            <div class="border-r border-ink/10 p-3">
+              <span class="block text-ink/45">EXEC</span><b id="exec-ms">0ms</b>
+            </div>
+            <div class="border-r border-ink/10 p-3">
+              <span class="block text-ink/45">TTS</span><b id="tts-ms">0ms</b>
+            </div>
+            <div class="p-3">
+              <span class="block text-ink/45">TOTAL</span
+              ><b id="total-ms">0ms</b>
+            </div>
+          </div>
+        </section>
+
+        <aside class="flex min-h-[420px] flex-col gap-4">
+          <section class="border border-ink/15 bg-ink p-4 text-white">
+            <p class="font-mono text-[10px] tracking-widest text-mint">
+              ACTIVE SCENARIO
+            </p>
+            <h2 id="scenario-id" class="mt-2 break-all text-lg font-extrabold">
+              waiting_for_turn
+            </h2>
+            <p id="scenario-label" class="mt-1 text-sm text-white/60">
+              Маршрут появится после реплики
+            </p>
+            <div class="mt-4 h-1.5 bg-white/15">
+              <div
+                id="confidence-bar"
+                class="h-full w-0 bg-mint transition-all"
+              ></div>
+            </div>
+            <p id="confidence" class="mt-2 font-mono text-xs">confidence: --</p>
+          </section>
+          <section class="flex-1 border border-ink/15 bg-white/80 p-4">
+            <h2 class="text-sm font-extrabold">Контекст оператору</h2>
+            <div
+              id="operator-context"
+              class="mt-3 text-xs leading-5 text-ink/60"
+            >
+              Передача оператору появится для жалобы, мошенничества или по
+              запросу клиента.
+            </div>
+          </section>
+          <section class="border border-coral/35 bg-coral/10 p-4">
+            <p class="text-xs font-bold text-coral">
+              <i class="fa-solid fa-shield-halved mr-2"></i>Security note
+            </p>
+            <p class="mt-1 text-xs leading-5 text-ink/70">
+              Не запрашивайте PIN, CVV и SMS-коды. Данные в демо синтетические.
+            </p>
+          </section>
+        </aside>
+      </div>
+    </main>
+    <script>
+      const ui = {
+        conversation: document.getElementById("conversation"),
+        textInput: document.getElementById("text-input"),
+        sendButton: document.getElementById("send-button"),
+        micButton: document.getElementById("mic-button"),
+        voiceStatus: document.getElementById("voice-status"),
+        connectionStatus: document.getElementById("connection-status"),
+        connectionDot: document.getElementById("connection-dot"),
+        turnCount: document.getElementById("turn-count"),
+        tracePanel: document.getElementById("trace-panel"),
+        routerMode: document.getElementById("router-mode"),
+        scenarioId: document.getElementById("scenario-id"),
+        scenarioLabel: document.getElementById("scenario-label"),
+        confidence: document.getElementById("confidence"),
+        confidenceBar: document.getElementById("confidence-bar"),
+        operatorContext: document.getElementById("operator-context"),
+        resetButton: document.getElementById("reset-button"),
+        sttMs: document.getElementById("stt-ms"),
+        routerMs: document.getElementById("router-ms"),
+        execMs: document.getElementById("exec-ms"),
+        ttsMs: document.getElementById("tts-ms"),
+        totalMs: document.getElementById("total-ms"),
+      };
+      let socket;
+      let turnCount = 0;
+      let recognition;
+      const wsUrl = `${location.protocol === "https:" ? "wss" : "ws"}://${location.hostname}:8000/ws/voice`;
+      const escapeHtml = (text) =>
+        text.replace(
+          /[&<>'"]/g,
+          (char) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              "'": "&#039;",
+              '"': "&quot;",
+            })[char],
+        );
+      function addMessage(role, text) {
+        const node = document.createElement("div");
+        node.className = `max-w-[90%] p-3 text-sm leading-6 ${role === "user" ? "ml-auto border-r-2 border-coral bg-coral/10" : "border-l-2 border-mint bg-mint/10"}`;
+        node.innerHTML = `<b>${role === "user" ? "Клиент" : "Voice Router"}:</b> ${escapeHtml(text)}`;
+        ui.conversation.append(node);
+        ui.conversation.scrollTop = ui.conversation.scrollHeight;
+      }
+      function connect() {
+        socket = new WebSocket(wsUrl);
+        socket.onopen = () => {
+          ui.connectionStatus.textContent = "online";
+          ui.connectionDot.className = "h-2.5 w-2.5 rounded-full bg-mint";
+        };
+        socket.onclose = () => {
+          ui.connectionStatus.textContent = "reconnecting";
+          ui.connectionDot.className = "h-2.5 w-2.5 rounded-full bg-coral";
+          setTimeout(connect, 1500);
+        };
+        socket.onmessage = (event) => handleMessage(JSON.parse(event.data));
+      }
+      function sendText(text) {
+        if (!text.trim() || socket.readyState !== WebSocket.OPEN) return;
+        addMessage("user", text);
+        socket.send(JSON.stringify({ type: "text", text }));
+        ui.textInput.value = "";
+        ui.sendButton.disabled = true;
+        ui.sendButton.classList.add("opacity-40");
+      }
+      function handleMessage(message) {
+        ui.sendButton.disabled = false;
+        ui.sendButton.classList.remove("opacity-40");
+        if (message.type === "reset_complete") {
+          location.reload();
+          return;
+        }
+        message.warnings?.forEach((warning) => {
+          ui.voiceStatus.textContent = warning;
+        });
+        addMessage("assistant", message.response_text);
+        const { decision, latency, history_size, router_mode } = message.trace;
+        turnCount = history_size;
+        ui.turnCount.textContent = `${turnCount} / 10 turns`;
+        ui.routerMode.textContent = router_mode.toUpperCase();
+        ui.routerMode.className = `border px-2 py-1 font-mono text-[10px] font-bold ${router_mode === "llm" ? "border-mint/30 bg-mint/10 text-mint" : "border-amber-400/40 bg-amber-50 text-amber-700"}`;
+        ui.scenarioId.textContent = decision.scenario_id;
+        ui.scenarioLabel.textContent = `${decision.language.toUpperCase()} · ${decision.rationale}`;
+        ui.confidence.textContent = `confidence: ${(decision.confidence * 100).toFixed(0)}%`;
+        ui.confidenceBar.style.width = `${decision.confidence * 100}%`;
+        const latencyNodes = {
+          stt: ui.sttMs,
+          router: ui.routerMs,
+          execution: ui.execMs,
+          tts: ui.ttsMs,
+          total: ui.totalMs,
+        };
+        Object.entries(latencyNodes).forEach(([key, node]) => {
+          node.textContent = `${latency[`${key}_ms`]}ms`;
+        });
+        renderTrace(decision);
+        if (message.operator_context) renderOperator(message.operator_context);
+        if (message.audio_base64)
+          new Audio(`data:audio/mpeg;base64,${message.audio_base64}`).play();
+      }
+      function renderTrace(decision) {
+        const params =
+          Object.entries(decision.extracted_parameters)
+            .map(
+              ([key, value]) =>
+                `<span class="border border-ink/15 bg-paper px-2 py-1 font-mono text-[10px]">${escapeHtml(key)}: ${escapeHtml(value)}</span>`,
+            )
+            .join("") ||
+          '<span class="text-xs text-ink/45">Параметры не извлечены</span>';
+        const alternatives =
+          decision.alternatives
+            .map(
+              (item) =>
+                `<li class="flex justify-between border-b border-ink/10 py-2 text-xs"><span>${escapeHtml(item.label)}</span><span class="font-mono">${Math.round(item.confidence * 100)}%</span></li>`,
+            )
+            .join("") ||
+          '<li class="py-2 text-xs text-ink/45">Нет альтернатив</li>';
+        ui.tracePanel.innerHTML = `<div class="trace-flash space-y-5"><div><p class="font-mono text-[10px] text-ink/45">DECISION</p><div class="mt-2 flex items-center justify-between"><h3 class="text-xl font-extrabold">${escapeHtml(decision.scenario_id)}</h3><span class="bg-mint px-2 py-1 font-mono text-xs font-bold text-white">${Math.round(decision.confidence * 100)}%</span></div><p class="mt-2 text-sm leading-6">${escapeHtml(decision.rationale)}</p></div><div><p class="font-mono text-[10px] text-ink/45">EXTRACTED PARAMETERS</p><div class="mt-2 flex flex-wrap gap-2">${params}</div></div><div><p class="font-mono text-[10px] text-ink/45">ALTERNATIVE ROUTES</p><ul class="mt-1">${alternatives}</ul></div></div>`;
+      }
+      function renderOperator(context) {
+        ui.operatorContext.innerHTML = `<p class="font-bold text-coral">Оператор подключается</p><p class="mt-2">Активные цели: ${context.active_goals.join(" → ")}</p><p class="mt-1">Параметры: ${Object.keys(context.known_parameters).length ? escapeHtml(JSON.stringify(context.known_parameters)) : "нет"}</p><p class="mt-2 text-ink/45">Передано ${context.history.length} реплик.</p>`;
+      }
+      ui.sendButton.onclick = () => sendText(ui.textInput.value);
+      ui.textInput.onkeydown = (event) => {
+        if (event.key === "Enter") sendText(ui.textInput.value);
+      };
+      ui.resetButton.onclick = () =>
+        socket.send(JSON.stringify({ type: "reset" }));
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = "ru-RU";
+        recognition.interimResults = false;
+        recognition.onstart = () => {
+          ui.voiceStatus.textContent = "Слушаю...";
+          ui.micButton.classList.add("bg-mint", "text-white", "pulse-ring");
+        };
+        recognition.onresult = (event) => {
+          const text = event.results[0][0].transcript;
+          ui.voiceStatus.textContent = `Распознано: ${text}`;
+          sendText(text);
+        };
+        recognition.onerror = () => {
+          ui.voiceStatus.textContent =
+            "Речь не распознана, используйте текстовый канал";
+        };
+        recognition.onend = () =>
+          ui.micButton.classList.remove("bg-mint", "text-white", "pulse-ring");
+        ui.micButton.onclick = () => recognition.start();
+      } else {
+        ui.micButton.disabled = true;
+        ui.micButton.classList.add("opacity-40");
+        ui.voiceStatus.textContent = "Распознавание браузера недоступно";
+      }
+      connect();
+    </script>
+  </body>
+</html>
