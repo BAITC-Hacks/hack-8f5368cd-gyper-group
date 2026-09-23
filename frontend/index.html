@@ -24,10 +24,10 @@
               mono: ["Space Mono", "monospace"],
             },
             colors: {
-              ink: "#18322b",
-              mint: "#00a884",
-              coral: "#e86f51",
-              paper: "#f7f5ee",
+              ink: "#24332e",
+              mint: "#18745c",
+              coral: "#a34c3c",
+              paper: "#f6f7f6",
             },
           },
         },
@@ -35,9 +35,47 @@
     </script>
     <style>
       body {
-        background-color: #f7f5ee;
-        background-image: radial-gradient(#c9d8ce 1px, transparent 1px);
-        background-size: 20px 20px;
+        background-color: #f6f7f6;
+        -webkit-font-smoothing: antialiased;
+      }
+      main > div > section,
+      aside > section {
+        min-width: 0;
+        border-radius: 12px;
+      }
+      button,
+      input {
+        border-radius: 8px;
+        transition: background-color 150ms, border-color 150ms;
+      }
+      button:focus-visible,
+      input:focus-visible {
+        outline: 2px solid #18745c;
+        outline-offset: 3px;
+      }
+      button:disabled {
+        cursor: not-allowed;
+      }
+      #conversation > div {
+        overflow-wrap: anywhere;
+      }
+      #trace-panel,
+      #operator-context {
+        overflow-wrap: anywhere;
+      }
+      #trace-panel h3 {
+        min-width: 0;
+      }
+      #trace-panel h3 + span {
+        flex-shrink: 0;
+        margin-left: 12px;
+        border-radius: 6px;
+      }
+      #router-mode {
+        border-radius: 6px;
+      }
+      #confidence-bar {
+        border-radius: inherit;
       }
       .scroll-area::-webkit-scrollbar {
         width: 5px;
@@ -71,29 +109,37 @@
           opacity: 0.65;
         }
       }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
     </style>
   </head>
   <body class="min-h-screen text-ink">
     <main
-      class="mx-auto grid min-h-screen max-w-[1600px] grid-rows-[auto_1fr] p-4 lg:p-6"
+      class="mx-auto grid min-h-screen max-w-[1600px] grid-rows-[auto_1fr] p-4 sm:p-6 lg:p-8"
     >
       <header
-        class="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-ink/15 pb-4"
+        class="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-ink/10 pb-6"
       >
         <div class="flex items-center gap-3">
           <div
-            class="grid h-10 w-10 place-items-center bg-mint text-xl text-white"
+            class="grid h-10 w-10 place-items-center rounded-xl bg-mint/10 text-lg text-mint"
           >
             <i class="fa-solid fa-route"></i>
           </div>
           <div>
-            <h1 class="text-lg font-extrabold tracking-wide">VOICE ROUTER</h1>
+            <h1 class="text-lg font-semibold tracking-tight">Voice Router</h1>
             <p class="text-xs font-medium text-ink/60">
               Halyk Bank · supervisor console
             </p>
           </div>
         </div>
-        <div class="flex items-center gap-2 text-xs font-bold">
+        <div class="flex items-center gap-2 text-xs font-medium text-ink/70">
           <span
             id="connection-dot"
             class="h-2.5 w-2.5 rounded-full bg-amber-400"
@@ -102,7 +148,7 @@
           <button
             id="reset-button"
             title="Новый диалог"
-            class="ml-3 h-9 w-9 border border-ink/20 hover:bg-ink hover:text-white"
+            class="ml-3 h-9 w-9 border border-ink/10 bg-white hover:bg-ink/5"
           >
             <i class="fa-solid fa-rotate-left"></i>
           </button>
@@ -110,25 +156,25 @@
       </header>
 
       <div
-        class="grid min-h-0 gap-4 xl:grid-cols-[minmax(390px,1fr)_minmax(460px,1.35fr)_minmax(330px,.8fr)]"
+        class="grid min-h-0 gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,.8fr)]"
       >
         <section
-          class="flex min-h-[420px] flex-col border border-ink/15 bg-white/80"
+          class="flex min-h-[420px] flex-col border border-ink/10 bg-white"
         >
           <div
-            class="flex items-center justify-between border-b border-ink/10 px-4 py-3"
+            class="flex items-center justify-between border-b border-ink/10 px-5 py-4"
           >
-            <h2 class="text-sm font-extrabold">Диалог</h2>
+            <h2 class="text-sm font-semibold">Диалог</h2>
             <span id="turn-count" class="font-mono text-[10px] text-ink/55"
               >0 / 10 turns</span
             >
           </div>
           <div
             id="conversation"
-            class="scroll-area flex-1 space-y-3 overflow-y-auto p-4"
+            class="scroll-area flex-1 space-y-3 overflow-y-auto p-5"
           >
             <div
-              class="max-w-[90%] border-l-2 border-mint bg-mint/10 p-3 text-sm leading-6"
+              class="max-w-[90%] rounded-xl bg-paper p-4 text-sm leading-6"
             >
               <b>Voice Router:</b> Сәлеметсіз бе! Чем могу помочь?
             </div>
@@ -137,13 +183,13 @@
             <div class="flex gap-2">
               <input
                 id="text-input"
-                class="min-w-0 flex-1 border border-ink/25 bg-paper px-3 py-3 text-sm outline-none focus:border-mint"
+                class="min-w-0 flex-1 border border-ink/10 bg-paper px-4 py-3 text-sm focus:border-mint"
                 placeholder="Введите реплику клиента..."
               />
               <button
                 id="send-button"
                 title="Отправить"
-                class="h-11 w-11 bg-ink text-white hover:bg-mint"
+                class="h-12 w-12 shrink-0 bg-mint text-white hover:bg-ink"
               >
                 <i class="fa-solid fa-arrow-up"></i>
               </button>
@@ -155,7 +201,7 @@
               <button
                 id="mic-button"
                 title="Голосовой ввод"
-                class="relative grid h-11 w-11 place-items-center border border-mint text-mint hover:bg-mint hover:text-white"
+                class="relative grid h-11 w-11 shrink-0 place-items-center border border-ink/10 text-mint hover:bg-mint hover:text-white"
               >
                 <i class="fa-solid fa-microphone"></i>
               </button>
@@ -164,19 +210,19 @@
         </section>
 
         <section
-          class="flex min-h-[420px] flex-col border border-ink/15 bg-white/80"
+          class="flex min-h-[420px] flex-col border border-ink/10 bg-white"
         >
           <div
-            class="flex items-center justify-between border-b border-ink/10 px-4 py-3"
+            class="flex items-center justify-between border-b border-ink/10 px-5 py-4"
           >
-            <h2 class="text-sm font-extrabold">Объяснимость маршрута</h2>
+            <h2 class="text-sm font-semibold">Объяснимость маршрута</h2>
             <span
               id="router-mode"
               class="border border-mint/30 bg-mint/10 px-2 py-1 font-mono text-[10px] font-bold text-mint"
               >READY</span
             >
           </div>
-          <div id="trace-panel" class="scroll-area flex-1 overflow-y-auto p-4">
+          <div id="trace-panel" class="scroll-area flex-1 overflow-y-auto p-5">
             <div
               class="grid place-items-center py-16 text-center text-sm text-ink/45"
             >
@@ -207,18 +253,18 @@
           </div>
         </section>
 
-        <aside class="flex min-h-[420px] flex-col gap-4">
-          <section class="border border-ink/15 bg-ink p-4 text-white">
+        <aside class="flex min-w-0 min-h-[420px] flex-col gap-5">
+          <section class="border border-ink/10 bg-white p-5">
             <p class="font-mono text-[10px] tracking-widest text-mint">
               ACTIVE SCENARIO
             </p>
-            <h2 id="scenario-id" class="mt-2 break-all text-lg font-extrabold">
+            <h2 id="scenario-id" class="mt-3 break-words text-lg font-semibold tracking-tight">
               waiting_for_turn
             </h2>
-            <p id="scenario-label" class="mt-1 text-sm text-white/60">
+            <p id="scenario-label" class="mt-2 text-sm leading-6 text-ink/60">
               Маршрут появится после реплики
             </p>
-            <div class="mt-4 h-1.5 bg-white/15">
+            <div class="mt-5 h-1.5 overflow-hidden rounded-full bg-ink/5">
               <div
                 id="confidence-bar"
                 class="h-full w-0 bg-mint transition-all"
@@ -226,8 +272,8 @@
             </div>
             <p id="confidence" class="mt-2 font-mono text-xs">confidence: --</p>
           </section>
-          <section class="flex-1 border border-ink/15 bg-white/80 p-4">
-            <h2 class="text-sm font-extrabold">Контекст оператору</h2>
+          <section class="flex-1 border border-ink/10 bg-white p-5">
+            <h2 class="text-sm font-semibold">Контекст оператору</h2>
             <div
               id="operator-context"
               class="mt-3 text-xs leading-5 text-ink/60"
@@ -236,8 +282,8 @@
               запросу клиента.
             </div>
           </section>
-          <section class="border border-coral/35 bg-coral/10 p-4">
-            <p class="text-xs font-bold text-coral">
+          <section class="border border-ink/10 bg-white p-5">
+            <p class="text-xs font-medium text-ink/70">
               <i class="fa-solid fa-shield-halved mr-2"></i>Security note
             </p>
             <p class="mt-1 text-xs leading-5 text-ink/70">
@@ -289,7 +335,7 @@
         );
       function addMessage(role, text) {
         const node = document.createElement("div");
-        node.className = `max-w-[90%] p-3 text-sm leading-6 ${role === "user" ? "ml-auto border-r-2 border-coral bg-coral/10" : "border-l-2 border-mint bg-mint/10"}`;
+        node.className = `max-w-[90%] rounded-xl p-4 text-sm leading-6 ${role === "user" ? "ml-auto bg-mint/10" : "bg-paper"}`;
         node.innerHTML = `<b>${role === "user" ? "Клиент" : "Voice Router"}:</b> ${escapeHtml(text)}`;
         ui.conversation.append(node);
         ui.conversation.scrollTop = ui.conversation.scrollHeight;
@@ -367,7 +413,7 @@
             )
             .join("") ||
           '<li class="py-2 text-xs text-ink/45">Нет альтернатив</li>';
-        ui.tracePanel.innerHTML = `<div class="trace-flash space-y-5"><div><p class="font-mono text-[10px] text-ink/45">DECISION</p><div class="mt-2 flex items-center justify-between"><h3 class="text-xl font-extrabold">${escapeHtml(decision.scenario_id)}</h3><span class="bg-mint px-2 py-1 font-mono text-xs font-bold text-white">${Math.round(decision.confidence * 100)}%</span></div><p class="mt-2 text-sm leading-6">${escapeHtml(decision.rationale)}</p></div><div><p class="font-mono text-[10px] text-ink/45">EXTRACTED PARAMETERS</p><div class="mt-2 flex flex-wrap gap-2">${params}</div></div><div><p class="font-mono text-[10px] text-ink/45">ALTERNATIVE ROUTES</p><ul class="mt-1">${alternatives}</ul></div></div>`;
+        ui.tracePanel.innerHTML = `<div class="trace-flash space-y-5"><div><p class="font-mono text-[10px] text-ink/45">DECISION</p><div class="mt-2 flex items-center justify-between"><h3 class="text-xl font-semibold tracking-tight">${escapeHtml(decision.scenario_id)}</h3><span class="bg-mint px-2 py-1 font-mono text-xs font-bold text-white">${Math.round(decision.confidence * 100)}%</span></div><p class="mt-2 text-sm leading-6">${escapeHtml(decision.rationale)}</p></div><div><p class="font-mono text-[10px] text-ink/45">EXTRACTED PARAMETERS</p><div class="mt-2 flex flex-wrap gap-2">${params}</div></div><div><p class="font-mono text-[10px] text-ink/45">ALTERNATIVE ROUTES</p><ul class="mt-1">${alternatives}</ul></div></div>`;
       }
       function renderOperator(context) {
         ui.operatorContext.innerHTML = `<p class="font-bold text-coral">Оператор подключается</p><p class="mt-2">Активные цели: ${context.active_goals.join(" → ")}</p><p class="mt-1">Параметры: ${Object.keys(context.known_parameters).length ? escapeHtml(JSON.stringify(context.known_parameters)) : "нет"}</p><p class="mt-2 text-ink/45">Передано ${context.history.length} реплик.</p>`;
