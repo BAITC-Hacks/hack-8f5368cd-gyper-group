@@ -435,9 +435,13 @@
           ui.micButton.classList.add("bg-mint", "text-white", "pulse-ring");
         };
         recognition.onresult = (event) => {
-          const text = event.results[0][0].transcript;
-          ui.voiceStatus.textContent = `Распознано: ${text}`;
-          sendText(text);
+          const text = event.results[0][0].transcript.trim();
+          if (!text) return;
+          const draft = ui.textInput.value;
+          ui.textInput.value = `${draft}${draft && !/\s$/.test(draft) ? " " : ""}${text}`;
+          ui.voiceStatus.textContent = "Текст распознан. Проверьте его и нажмите «Отправить» или Enter.";
+          ui.textInput.focus();
+          ui.textInput.setSelectionRange(ui.textInput.value.length, ui.textInput.value.length);
         };
         recognition.onerror = (event) => {
           ui.voiceStatus.textContent =
