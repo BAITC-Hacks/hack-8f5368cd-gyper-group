@@ -24,10 +24,10 @@
               mono: ["Space Mono", "monospace"],
             },
             colors: {
-              ink: "#24332e",
-              mint: "#18745c",
+              ink: "#242139",
+              mint: "#54428c",
               coral: "#a34c3c",
-              paper: "#f6f7f6",
+              paper: "#f2f1f8",
             },
           },
         },
@@ -35,22 +35,25 @@
     </script>
     <style>
       body {
-        background-color: #f6f7f6;
+        background: #e8e5e0;
+        background-image: radial-gradient(ellipse at 10% 0%, #f9f7f2, transparent 55%),
+          radial-gradient(ellipse at 100% 80%, #cbd5e1, transparent 60%);
+        font-family: "Manrope", sans-serif;
         -webkit-font-smoothing: antialiased;
       }
       main > div > section,
       aside > section {
         min-width: 0;
-        border-radius: 12px;
+        border-radius: 28px;
       }
       button,
       input {
-        border-radius: 8px;
+        border-radius: 999px;
         transition: background-color 150ms, border-color 150ms;
       }
       button:focus-visible,
       input:focus-visible {
-        outline: 2px solid #18745c;
+        outline: 2px solid #54428c;
         outline-offset: 3px;
       }
       button:disabled {
@@ -72,7 +75,7 @@
         border-radius: 6px;
       }
       #router-mode {
-        border-radius: 6px;
+        border-radius: 999px;
       }
       #confidence-bar {
         border-radius: inherit;
@@ -109,6 +112,129 @@
           opacity: 0.65;
         }
       }
+      .app-shell {
+        max-width: 1480px;
+        margin: 32px auto;
+        padding: 20px;
+        border: 1px solid #ffffff;
+        border-radius: 42px;
+        background: rgba(250, 249, 254, .82);
+        box-shadow: 0 24px 80px #35324d12;
+      }
+      .app-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 8px 16px 24px;
+      }
+      .brand-icon { border-radius: 50%; background: #292047; color: white; }
+      .connection-pill {
+        border: 1px solid #e3dfed;
+        border-radius: 999px;
+        background: #ffffffb3;
+        padding: 6px 8px 6px 18px;
+      }
+      .hero {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        min-height: 340px;
+        padding: 42px 44px;
+        border-radius: 30px;
+        background: linear-gradient(115deg, #dbeef5 0%, #b6d2e8 45%, #8e9cc4 100%);
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(ellipse at 80% 100%, #edc5b4a6, transparent 50%);
+      }
+      .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+      .hero h2 {
+        margin: 20px 0 18px;
+        max-width: 680px;
+        font-size: clamp(36px, 4.8vw, 68px);
+        font-weight: 500;
+        letter-spacing: -.055em;
+        line-height: 1.06;
+      }
+      .hero-copy { max-width: 380px; font-size: 13px; line-height: 1.8; color: #44465e; }
+      .hero-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+      .hero-links a {
+        display: inline-flex; align-items: center; gap: 22px;
+        padding: 12px 20px; border-radius: 999px;
+        background: #292047; color: white; font-size: 12px;
+        transition: background-color 150ms;
+      }
+      .hero-links a:hover { background: #54428c; }
+      .hero-links a:focus-visible { outline: 2px solid #54428c; outline-offset: 4px; }
+      .hero-links .secondary-link { background: #ffffff70; color: #292047; }
+      .hero-links .secondary-link:hover { background: #ffffffb0; }
+      .voice-sculpture {
+        position: absolute; z-index: -1; right: 7%; top: -10px;
+        width: 370px; height: 370px; transform: rotate(-28deg);
+      }
+      .voice-sculpture span {
+        position: absolute; inset: 0; border: 36px solid #e5eff6;
+        border-radius: 46%; transform: rotateX(40deg);
+        box-shadow: inset 12px 12px 22px #8290b5, inset -8px -8px 15px #fff,
+          15px 20px 30px #51658b55, -6px -6px 15px #ffffff80;
+      }
+      .voice-sculpture span:nth-child(2) { inset: 60px; border-width: 27px; }
+      .voice-sculpture span:nth-child(3) { inset: 120px; border-width: 22px; }
+      .hero-note {
+        position: absolute; right: 28px; bottom: 24px;
+        display: flex; align-items: center; gap: 14px;
+        padding: 16px 22px; border: 1px solid #ffffff80; border-radius: 24px;
+        background: #ffffff60; backdrop-filter: blur(18px); font-size: 12px;
+      }
+      .hero-note i { font-size: 20px; color: #54428c; }
+      .hero-note small { display: block; margin-top: 4px; color: #515168; }
+      .workspace-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 28px 8px 18px; }
+      .workspace-heading h2 { font-size: 18px; font-weight: 600; letter-spacing: -.04em; }
+      .workspace-heading p { font-size: 11px; color: #6c687d; }
+      .workspace { display: grid; gap: 16px; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, .8fr); }
+      .workspace > section { min-width: 0; height: 510px; }
+      .workspace > section, .workspace aside > section { border-color: #e8e5ee; background: #ffffffb8; }
+      .workspace > section > div:first-child { padding: 22px; }
+      .workspace aside { gap: 16px; }
+      .workspace aside > section:first-child { background: linear-gradient(140deg, #e4e6f7, #e9f0f8); border-color: #dce0ee; }
+      .workspace aside > section:last-child { background: transparent; }
+      #conversation > div { border-radius: 20px; }
+      #conversation > div b { display: block; margin-bottom: 5px; font-size: 10px; letter-spacing: .04em; font-weight: 600; }
+      #conversation > div.ml-auto { background: #e9e5f5; border-bottom-right-radius: 5px; }
+      #conversation > div:not(.ml-auto) { border-top-left-radius: 5px; }
+      #text-input { background: #f4f3f8; font-size: 12px; }
+      #voice-status { padding: 0 8px; font-size: 11px; color: #6b657e; }
+      #trace-panel > .grid { min-height: 100%; align-content: center; gap: 10px; color: #736e84; }
+      #trace-panel > .grid > i { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: #eeebf6; color: #8475ac; font-size: 23px; }
+      .app-footer { display: flex; justify-content: space-between; gap: 12px; padding: 22px 8px 2px; font-size: 10px; color: #777185; }
+      @media (max-width: 1199px) {
+        .app-shell { margin: 20px; }
+        .workspace { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+        .workspace aside { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); min-height: 0; }
+        .voice-sculpture { right: -100px; opacity: .55; }
+        .hero-note { display: none; }
+      }
+      @media (max-width: 700px) {
+        .app-shell { margin: 10px; padding: 12px; border-radius: 28px; }
+        .app-header { padding: 8px 6px 20px; gap: 14px; }
+        .app-header h1 { font-size: 16px; }
+        .app-header p { font-size: 10px; }
+        .connection-pill { padding-left: 12px; }
+        .hero { padding: 28px 24px; border-radius: 22px; min-height: 340px; }
+        .hero h2 { font-size: clamp(32px, 8vw, 48px); }
+        .hero-copy { max-width: 290px; }
+        .voice-sculpture { right: -210px; top: 60px; opacity: .22; }
+        .workspace { grid-template-columns: minmax(0, 1fr); }
+        .workspace aside { grid-template-columns: minmax(0, 1fr); }
+        .workspace-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+        .workspace > section { height: 450px; }
+        .app-footer { flex-wrap: wrap; }
+      }
       @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
@@ -121,25 +247,25 @@
   </head>
   <body class="min-h-screen text-ink">
     <main
-      class="mx-auto grid min-h-screen max-w-[1600px] grid-rows-[auto_1fr] p-4 sm:p-6 lg:p-8"
+      class="app-shell"
     >
       <header
-        class="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-ink/10 pb-6"
+        class="app-header"
       >
         <div class="flex items-center gap-3">
           <div
-            class="grid h-10 w-10 place-items-center rounded-xl bg-mint/10 text-lg text-mint"
+            class="brand-icon grid h-10 w-10 place-items-center text-lg"
           >
             <i class="fa-solid fa-route"></i>
           </div>
           <div>
             <h1 class="text-lg font-semibold tracking-tight">Voice Router</h1>
             <p class="text-xs font-medium text-ink/60">
-              Halyk Bank · supervisor console
+              Halyk Bank · голосовой ассистент
             </p>
           </div>
         </div>
-        <div class="flex items-center gap-2 text-xs font-medium text-ink/70">
+        <div class="connection-pill flex items-center gap-2 text-xs font-medium text-ink/70">
           <span
             id="connection-dot"
             class="h-2.5 w-2.5 rounded-full bg-amber-400"
@@ -155,16 +281,29 @@
         </div>
       </header>
 
-      <div
-        class="grid min-h-0 gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,.8fr)]"
-      >
+      <section class="hero" aria-labelledby="hero-title">
+        <p class="eyebrow">Меньше действий. Больше понимания.</p>
+        <h2 id="hero-title">Просто говорите.<br />Мы найдём решение.</h2>
+        <p class="hero-copy">Ваш голос — начало диалога. Задайте вопрос на русском или казахском, а ассистент подберёт нужный маршрут.</p>
+        <div class="hero-links">
+          <a href="#text-input">Начать диалог <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+          <a href="#route-panel" class="secondary-link">Как принято решение <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
+        </div>
+        <div class="voice-sculpture" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="hero-note"><i class="fa-solid fa-wave-square" aria-hidden="true"></i><div>В вашем ритме<small>Голосом или текстом · RU / KZ</small></div></div>
+      </section>
+      <div class="workspace-heading">
+        <h2>Пространство диалога</h2>
+        <p>Один вопрос — понятный следующий шаг</p>
+      </div>
+      <div class="workspace">
         <section
           class="flex min-h-[420px] flex-col border border-ink/10 bg-white"
         >
           <div
             class="flex items-center justify-between border-b border-ink/10 px-5 py-4"
           >
-            <h2 class="text-sm font-semibold">Диалог</h2>
+            <h2 class="text-sm font-semibold"><i class="fa-regular fa-comment mr-2 text-mint" aria-hidden="true"></i>Ваш диалог</h2>
             <span id="turn-count" class="font-mono text-[10px] text-ink/55"
               >0 / 10 turns</span
             >
@@ -209,13 +348,13 @@
           </div>
         </section>
 
-        <section
+        <section id="route-panel" tabindex="-1"
           class="flex min-h-[420px] flex-col border border-ink/10 bg-white"
         >
           <div
             class="flex items-center justify-between border-b border-ink/10 px-5 py-4"
           >
-            <h2 class="text-sm font-semibold">Объяснимость маршрута</h2>
+            <h2 class="text-sm font-semibold">Путь к решению</h2>
             <span
               id="router-mode"
               class="border border-mint/30 bg-mint/10 px-2 py-1 font-mono text-[10px] font-bold text-mint"
@@ -227,7 +366,7 @@
               class="grid place-items-center py-16 text-center text-sm text-ink/45"
             >
               <i class="fa-solid fa-wave-square mb-3 text-3xl"></i>
-              <p>Отправьте реплику, чтобы увидеть<br />решение LLM-router.</p>
+              <p>Здесь появится путь к решению.<br /><span class="text-xs">Начните диалог — мы покажем детали.</span></p>
             </div>
           </div>
           <div
@@ -256,10 +395,10 @@
         <aside class="flex min-w-0 min-h-[420px] flex-col gap-5">
           <section class="border border-ink/10 bg-white p-5">
             <p class="font-mono text-[10px] tracking-widest text-mint">
-              ACTIVE SCENARIO
+              ТЕКУЩИЙ МАРШРУТ
             </p>
             <h2 id="scenario-id" class="mt-3 break-words text-lg font-semibold tracking-tight">
-              waiting_for_turn
+              Всё начинается с вопроса
             </h2>
             <p id="scenario-label" class="mt-2 text-sm leading-6 text-ink/60">
               Маршрут появится после реплики
@@ -284,7 +423,7 @@
           </section>
           <section class="border border-ink/10 bg-white p-5">
             <p class="text-xs font-medium text-ink/70">
-              <i class="fa-solid fa-shield-halved mr-2"></i>Security note
+              <i class="fa-solid fa-shield-halved mr-2"></i>Безопасный диалог
             </p>
             <p class="mt-1 text-xs leading-5 text-ink/70">
               Не запрашивайте PIN, CVV и SMS-коды. Данные в демо синтетические.
@@ -292,6 +431,7 @@
           </section>
         </aside>
       </div>
+      <footer class="app-footer"><span>Voice Router / Halyk Bank</span><span>Технологии, которые умеют слушать.</span></footer>
     </main>
     <script>
       const ui = {
