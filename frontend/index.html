@@ -24,225 +24,112 @@
               mono: ["Space Mono", "monospace"],
             },
             colors: {
-              ink: "#242139",
-              mint: "#54428c",
+              ink: "#252622",
+              mint: "#5e7338",
               coral: "#a34c3c",
-              paper: "#f2f1f8",
+              paper: "#f0f2e9",
             },
           },
         },
       };
     </script>
     <style>
-      body {
-        background: #e8e5e0;
-        background-image: radial-gradient(ellipse at 10% 0%, #f9f7f2, transparent 55%),
-          radial-gradient(ellipse at 100% 80%, #cbd5e1, transparent 60%);
-        font-family: "Manrope", sans-serif;
-        -webkit-font-smoothing: antialiased;
-      }
-      main > div > section,
-      aside > section {
-        min-width: 0;
-        border-radius: 28px;
-      }
-      button,
-      input {
-        border-radius: 999px;
-        transition: background-color 150ms, border-color 150ms;
-      }
-      button:focus-visible,
-      input:focus-visible {
-        outline: 2px solid #54428c;
-        outline-offset: 3px;
-      }
-      button:disabled {
-        cursor: not-allowed;
-      }
-      #conversation > div {
-        overflow-wrap: anywhere;
-      }
-      #trace-panel,
-      #operator-context {
-        overflow-wrap: anywhere;
-      }
-      #trace-panel h3 {
-        min-width: 0;
-      }
-      #trace-panel h3 + span {
-        flex-shrink: 0;
-        margin-left: 12px;
-        border-radius: 6px;
-      }
-      #router-mode {
-        border-radius: 999px;
-      }
-      #confidence-bar {
-        border-radius: inherit;
-      }
-      .scroll-area::-webkit-scrollbar {
-        width: 5px;
-      }
-      .scroll-area::-webkit-scrollbar-thumb {
-        background: #b8c8bd;
-        border-radius: 3px;
-      }
-      .trace-flash {
-        animation: flash 0.45s ease-out;
-      }
-      @keyframes flash {
-        0% {
-          background: #d8f3e9;
-        }
-        100% {
-          background: transparent;
-        }
-      }
-      .pulse-ring {
-        animation: pulse 1.25s infinite;
-      }
-      @keyframes pulse {
-        0%,
-        100% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        50% {
-          transform: scale(1.12);
-          opacity: 0.65;
-        }
-      }
-      .app-shell {
-        max-width: 1480px;
-        margin: 32px auto;
-        padding: 20px;
-        border: 1px solid #ffffff;
-        border-radius: 42px;
-        background: rgba(250, 249, 254, .82);
-        box-shadow: 0 24px 80px #35324d12;
-      }
-      .app-header {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        padding: 8px 16px 24px;
-      }
-      .brand-icon { border-radius: 50%; background: #292047; color: white; }
-      .connection-pill {
-        border: 1px solid #e3dfed;
-        border-radius: 999px;
-        background: #ffffffb3;
-        padding: 6px 8px 6px 18px;
-      }
-      .hero {
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-        min-height: 340px;
-        padding: 42px 44px;
-        border-radius: 30px;
-        background: linear-gradient(115deg, #dbeef5 0%, #b6d2e8 45%, #8e9cc4 100%);
-      }
-      .hero::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        background: radial-gradient(ellipse at 80% 100%, #edc5b4a6, transparent 50%);
-      }
-      .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
-      .hero h2 {
-        margin: 20px 0 18px;
-        max-width: 680px;
-        font-size: clamp(36px, 4.8vw, 68px);
-        font-weight: 500;
-        letter-spacing: -.055em;
-        line-height: 1.06;
-      }
-      .hero-copy { max-width: 380px; font-size: 13px; line-height: 1.8; color: #44465e; }
-      .hero-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
-      .hero-links a {
-        display: inline-flex; align-items: center; gap: 22px;
-        padding: 12px 20px; border-radius: 999px;
-        background: #292047; color: white; font-size: 12px;
-        transition: background-color 150ms;
-      }
-      .hero-links a:hover { background: #54428c; }
-      .hero-links a:focus-visible { outline: 2px solid #54428c; outline-offset: 4px; }
-      .hero-links .secondary-link { background: #ffffff70; color: #292047; }
-      .hero-links .secondary-link:hover { background: #ffffffb0; }
-      .voice-sculpture {
-        position: absolute; z-index: -1; right: 7%; top: -10px;
-        width: 370px; height: 370px; transform: rotate(-28deg);
-      }
-      .voice-sculpture span {
-        position: absolute; inset: 0; border: 36px solid #e5eff6;
-        border-radius: 46%; transform: rotateX(40deg);
-        box-shadow: inset 12px 12px 22px #8290b5, inset -8px -8px 15px #fff,
-          15px 20px 30px #51658b55, -6px -6px 15px #ffffff80;
-      }
-      .voice-sculpture span:nth-child(2) { inset: 60px; border-width: 27px; }
-      .voice-sculpture span:nth-child(3) { inset: 120px; border-width: 22px; }
-      .hero-note {
-        position: absolute; right: 28px; bottom: 24px;
-        display: flex; align-items: center; gap: 14px;
-        padding: 16px 22px; border: 1px solid #ffffff80; border-radius: 24px;
-        background: #ffffff60; backdrop-filter: blur(18px); font-size: 12px;
-      }
-      .hero-note i { font-size: 20px; color: #54428c; }
-      .hero-note small { display: block; margin-top: 4px; color: #515168; }
-      .workspace-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 28px 8px 18px; }
-      .workspace-heading h2 { font-size: 18px; font-weight: 600; letter-spacing: -.04em; }
-      .workspace-heading p { font-size: 11px; color: #6c687d; }
-      .workspace { display: grid; gap: 16px; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, .8fr); }
-      .workspace > section { min-width: 0; height: 510px; }
-      .workspace > section, .workspace aside > section { border-color: #e8e5ee; background: #ffffffb8; }
-      .workspace > section > div:first-child { padding: 22px; }
-      .workspace aside { gap: 16px; }
-      .workspace aside > section:first-child { background: linear-gradient(140deg, #e4e6f7, #e9f0f8); border-color: #dce0ee; }
-      .workspace aside > section:last-child { background: transparent; }
-      #conversation > div { border-radius: 20px; }
-      #conversation > div b { display: block; margin-bottom: 5px; font-size: 10px; letter-spacing: .04em; font-weight: 600; }
-      #conversation > div.ml-auto { background: #e9e5f5; border-bottom-right-radius: 5px; }
-      #conversation > div:not(.ml-auto) { border-top-left-radius: 5px; }
-      #text-input { background: #f4f3f8; font-size: 12px; }
-      #voice-status { padding: 0 8px; font-size: 11px; color: #6b657e; }
-      #trace-panel > .grid { min-height: 100%; align-content: center; gap: 10px; color: #736e84; }
-      #trace-panel > .grid > i { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: #eeebf6; color: #8475ac; font-size: 23px; }
-      .app-footer { display: flex; justify-content: space-between; gap: 12px; padding: 22px 8px 2px; font-size: 10px; color: #777185; }
-      @media (max-width: 1199px) {
-        .app-shell { margin: 20px; }
-        .workspace { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-        .workspace aside { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); min-height: 0; }
-        .voice-sculpture { right: -100px; opacity: .55; }
-        .hero-note { display: none; }
+      :root { color-scheme: light; --canvas: #f6f5f0; --ink: #252622; --line: #dcded5; --accent: #dcf588; }
+      body { margin: 0; background: var(--canvas); color: var(--ink); font-family: "Manrope", sans-serif; -webkit-font-smoothing: antialiased; }
+      ::selection { background: var(--accent); color: var(--ink); }
+      button, input, a { transition: background-color .18s, color .18s; }
+      button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid #5e7338; outline-offset: 4px; }
+      button:disabled { cursor: not-allowed; opacity: .45; }
+      .app-shell { max-width: 1440px; margin: auto; padding: 0 52px; }
+      .app-header { min-height: 100px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--line); }
+      .brand-icon { background: var(--ink); color: var(--accent); border-radius: 50%; }
+      .app-header h1 { font-size: 19px; letter-spacing: -.06em; }
+      .app-header p { margin-top: 3px; font-size: 10px; color: #6a6c63; }
+      .connection-pill { gap: 10px; font-size: 11px; }
+      #reset-button { margin-left: 20px; border: 1px solid var(--line); border-radius: 50%; background: transparent; width: 40px; height: 40px; }
+      #reset-button:hover { background: var(--accent); }
+      .intro { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 30px; padding: 44px 0 40px; }
+      .eyebrow { font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: .08em; color: #6a6c63; text-transform: uppercase; }
+      .intro h2 { margin-top: 16px; font-size: clamp(48px, 6.8vw, 92px); line-height: 1; font-weight: 500; letter-spacing: -.075em; }
+      .intro h2 span { color: #8a8e7e; }
+      .intro-note { max-width: 240px; padding-bottom: 5px; font-size: 12px; line-height: 1.8; color: #64665d; }
+      .intro-note p + p { margin-top: 16px; font-family: "Space Mono", monospace; font-size: 10px; color: #34372e; }
+      .workspace { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 0 32px; }
+      .workspace > section { min-width: 0; height: 510px; min-height: 0; border: 0; border-radius: 0; }
+      .chat-panel { background: #fff; border-radius: 4px 40px 4px 4px !important; }
+      .workspace > section > div:first-child { border-bottom: 0; padding: 24px 28px; }
+      .section-number { margin-right: 12px; font-family: "Space Mono", monospace; color: #818678; font-size: 10px; font-weight: 400; }
+      #conversation { padding: 12px 28px 24px; min-height: 0; }
+      #conversation > div { overflow-wrap: anywhere; border-radius: 0; padding: 16px 0; background: transparent; }
+      #conversation > div b { display: block; margin-bottom: 10px; font-size: 10px; font-weight: 500; color: #72776a; }
+      #conversation > div.ml-auto { background: #eff3e6; padding: 16px 20px; border-radius: 18px 18px 0 18px; }
+      #conversation > div:first-child { font-size: clamp(22px, 2.1vw, 30px); letter-spacing: -.045em; line-height: 1.4; max-width: 420px; }
+      .composer { margin: 0 20px 20px; padding: 12px; background: var(--canvas); border: 1px solid #e9eae3; border-radius: 22px; }
+      .composer-row { display: flex; align-items: center; gap: 8px; }
+      #text-input { border: 0; background: transparent; padding: 14px 10px; font-size: 13px; }
+      #text-input::placeholder { color: #74796c; }
+      #send-button { background: var(--ink); color: white; border-radius: 50%; width: 44px; height: 44px; }
+      #send-button:hover { background: #505747; }
+      #mic-button { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--accent); color: var(--ink); }
+      #mic-button:hover { background: #c8e276; }
+      #mic-button.pulse-ring { background: #252622; color: var(--accent); animation: pulse 1.3s infinite; }
+      .composer-hint { border-top: 1px solid #e1e4d9; padding: 10px 10px 0; margin-top: 8px; }
+      #voice-status { font-size: 10px; line-height: 1.6; color: #73796a; }
+      #route-panel { background: transparent; }
+      #route-panel > div:first-child { padding: 24px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); }
+      #router-mode { border: 1px solid #c9cfba; border-radius: 3px; background: #eaf0dd; color: #4f6236; font-size: 9px; }
+      #trace-panel { padding: 24px 0; min-height: 0; overflow-wrap: anywhere; }
+      #trace-panel > .grid { min-height: 100%; align-content: center; justify-items: start; text-align: left; padding: 10px 0; color: #74796c; }
+      .route-symbol { width: 72px; height: 72px; display: grid; place-items: center; border: 1px solid #b5bcaa; border-radius: 50%; margin-bottom: 28px; font-size: 26px; color: #59634c; }
+      #trace-panel h3 { min-width: 0; font-size: 20px; }
+      #trace-panel h3 + span { flex-shrink: 0; margin-left: 12px; }
+      .latency { border-color: var(--line); }
+      .latency > div { padding: 16px 4px; border: 0; }
+      .latency b { display: block; margin-top: 6px; font-weight: 400; color: #555d4d; }
+      .workspace aside { grid-column: 1 / -1; display: grid; grid-template-columns: 1.2fr 1fr .8fr; gap: 0; min-height: 0; margin-top: 34px; border-top: 1px solid var(--line); }
+      .workspace aside > section { min-width: 0; border: 0; background: transparent; padding: 25px 28px; border-right: 1px solid var(--line); }
+      .workspace aside > section:first-child { padding-left: 0; }
+      .workspace aside > section:last-child { border-right: 0; padding-right: 0; }
+      #scenario-id { font-size: 20px; font-weight: 500; letter-spacing: -.04em; }
+      #scenario-label, #operator-context { color: #707568; font-size: 12px; line-height: 1.8; overflow-wrap: anywhere; }
+      #confidence { font-size: 10px; color: #68715b; }
+      #confidence-bar { background: #899a68; }
+      .app-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 22px 0; border-top: 1px solid var(--line); font-size: 10px; color: #777d6e; }
+      .scroll-area { scrollbar-width: thin; scrollbar-color: #c9cebf transparent; }
+      .trace-flash { animation: flash .45s ease-out; }
+      @keyframes flash { from { background: #eaf0dd; } to { background: transparent; } }
+      @keyframes pulse { 50% { box-shadow: 0 0 0 6px #dcf58870; } }
+      @media (max-width: 1000px) {
+        .app-shell { padding: 0 28px; }
+        .intro { padding: 36px 0; }
+        .intro h2 { font-size: 64px; }
+        .intro-note { max-width: 200px; }
+        .workspace { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 0 24px; }
       }
       @media (max-width: 700px) {
-        .app-shell { margin: 10px; padding: 12px; border-radius: 28px; }
-        .app-header { padding: 8px 6px 20px; gap: 14px; }
-        .app-header h1 { font-size: 16px; }
-        .app-header p { font-size: 10px; }
-        .connection-pill { padding-left: 12px; }
-        .hero { padding: 28px 24px; border-radius: 22px; min-height: 340px; }
-        .hero h2 { font-size: clamp(32px, 8vw, 48px); }
-        .hero-copy { max-width: 290px; }
-        .voice-sculpture { right: -210px; top: 60px; opacity: .22; }
-        .workspace { grid-template-columns: minmax(0, 1fr); }
-        .workspace aside { grid-template-columns: minmax(0, 1fr); }
-        .workspace-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
-        .workspace > section { height: 450px; }
-        .app-footer { flex-wrap: wrap; }
+        .app-shell { padding: 0 18px; }
+        .app-header { padding: 20px 0; min-height: 0; gap: 16px; }
+        .app-header h1 { font-size: 17px; }
+        .connection-pill { gap: 6px; }
+        #reset-button { margin-left: 6px; width: 34px; height: 34px; }
+        .intro { grid-template-columns: 1fr; gap: 22px; padding: 30px 0; }
+        .intro h2 { font-size: clamp(46px, 11vw, 72px); }
+        .intro-note { max-width: 100%; }
+        .intro-note p + p { margin-top: 8px; }
+        .workspace { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+        .workspace > section { height: 420px; }
+        .workspace > #route-panel { height: 340px; }
+        .workspace > section > div:first-child { padding: 22px 18px; }
+        #route-panel > div:first-child { padding: 20px 0; }
+        #conversation { padding: 0 20px 20px; }
+        .composer { margin: 0 12px 12px; padding: 8px; }
+        #text-input { padding-left: 4px; font-size: 12px; }
+        #send-button, #mic-button { width: 40px; height: 40px; }
+        .workspace aside { grid-template-columns: 1fr; margin-top: 0; }
+        .workspace aside > section { padding: 22px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+        .workspace aside > section:last-child { border-bottom: 0; }
       }
-      @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation: none !important;
-          transition: none !important;
-        }
-      }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
     </style>
   </head>
   <body class="min-h-screen text-ink">
@@ -281,29 +168,21 @@
         </div>
       </header>
 
-      <section class="hero" aria-labelledby="hero-title">
-        <p class="eyebrow">Меньше действий. Больше понимания.</p>
-        <h2 id="hero-title">Просто говорите.<br />Мы найдём решение.</h2>
-        <p class="hero-copy">Ваш голос — начало диалога. Задайте вопрос на русском или казахском, а ассистент подберёт нужный маршрут.</p>
-        <div class="hero-links">
-          <a href="#text-input">Начать диалог <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-          <a href="#route-panel" class="secondary-link">Как принято решение <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
+      <section class="intro" aria-labelledby="hero-title">
+        <div>
+          <p class="eyebrow">Halyk / Пространство диалога</p>
+          <h2 id="hero-title">Слово <span>за вами.</span></h2>
         </div>
-        <div class="voice-sculpture" aria-hidden="true"><span></span><span></span><span></span></div>
-        <div class="hero-note"><i class="fa-solid fa-wave-square" aria-hidden="true"></i><div>В вашем ритме<small>Голосом или текстом · RU / KZ</small></div></div>
+        <div class="intro-note"><p>Скажите, что вас интересует.<br />Мы поможем с остальным.</p><p>RU / KZ &nbsp; ↘ Голосом или текстом</p></div>
       </section>
-      <div class="workspace-heading">
-        <h2>Пространство диалога</h2>
-        <p>Один вопрос — понятный следующий шаг</p>
-      </div>
       <div class="workspace">
         <section
-          class="flex min-h-[420px] flex-col border border-ink/10 bg-white"
+          class="chat-panel flex min-h-[420px] flex-col border border-ink/10 bg-white"
         >
           <div
             class="flex items-center justify-between border-b border-ink/10 px-5 py-4"
           >
-            <h2 class="text-sm font-semibold"><i class="fa-regular fa-comment mr-2 text-mint" aria-hidden="true"></i>Ваш диалог</h2>
+            <h2 class="text-sm font-semibold"><span class="section-number">01 /</span>Диалог</h2>
             <span id="turn-count" class="font-mono text-[10px] text-ink/55"
               >0 / 10 turns</span
             >
@@ -318,13 +197,20 @@
               <b>Voice Router:</b> Сәлеметсіз бе! Чем могу помочь?
             </div>
           </div>
-          <div class="border-t border-ink/10 p-3">
-            <div class="flex gap-2">
+          <div class="composer">
+            <div class="composer-row">
               <input
                 id="text-input"
                 class="min-w-0 flex-1 border border-ink/10 bg-paper px-4 py-3 text-sm focus:border-mint"
-                placeholder="Введите реплику клиента..."
+                placeholder="О чём хотите спросить?" aria-label="Ваше сообщение"
               />
+              <button
+                id="mic-button"
+                title="Голосовой ввод"
+                class="relative grid h-11 w-11 shrink-0 place-items-center border border-ink/10 text-mint hover:bg-mint hover:text-white"
+              >
+                <i class="fa-solid fa-microphone"></i>
+              </button>
               <button
                 id="send-button"
                 title="Отправить"
@@ -333,17 +219,11 @@
                 <i class="fa-solid fa-arrow-up"></i>
               </button>
             </div>
-            <div class="mt-3 flex items-center justify-between">
+            <div class="composer-hint">
               <span id="voice-status" role="status" aria-live="polite" class="text-xs text-ink/55"
-                >Текстовый канал готов</span
+                >Голос можно превратить в текст и отредактировать</span
               >
-              <button
-                id="mic-button"
-                title="Голосовой ввод"
-                class="relative grid h-11 w-11 shrink-0 place-items-center border border-ink/10 text-mint hover:bg-mint hover:text-white"
-              >
-                <i class="fa-solid fa-microphone"></i>
-              </button>
+
             </div>
           </div>
         </section>
@@ -354,7 +234,7 @@
           <div
             class="flex items-center justify-between border-b border-ink/10 px-5 py-4"
           >
-            <h2 class="text-sm font-semibold">Путь к решению</h2>
+            <h2 class="text-sm font-semibold"><span class="section-number">02 /</span>За словами</h2>
             <span
               id="router-mode"
               class="border border-mint/30 bg-mint/10 px-2 py-1 font-mono text-[10px] font-bold text-mint"
@@ -365,12 +245,12 @@
             <div
               class="grid place-items-center py-16 text-center text-sm text-ink/45"
             >
-              <i class="fa-solid fa-wave-square mb-3 text-3xl"></i>
-              <p>Здесь появится путь к решению.<br /><span class="text-xs">Начните диалог — мы покажем детали.</span></p>
+              <span class="route-symbol" aria-hidden="true">↗</span>
+              <p>Каждый вопрос находит свой путь.<br /><span class="text-xs">Здесь будут маршрут и объяснение выбора.</span></p>
             </div>
           </div>
           <div
-            class="grid grid-cols-5 border-t border-ink/10 font-mono text-[10px]"
+            class="latency grid grid-cols-5 border-t border-ink/10 font-mono text-[10px]"
           >
             <div class="border-r border-ink/10 p-3">
               <span class="block text-ink/45">STT</span><b id="stt-ms">0ms</b>
@@ -395,10 +275,10 @@
         <aside class="flex min-w-0 min-h-[420px] flex-col gap-5">
           <section class="border border-ink/10 bg-white p-5">
             <p class="font-mono text-[10px] tracking-widest text-mint">
-              ТЕКУЩИЙ МАРШРУТ
+              03 / ТЕКУЩИЙ МАРШРУТ
             </p>
             <h2 id="scenario-id" class="mt-3 break-words text-lg font-semibold tracking-tight">
-              Всё начинается с вопроса
+              Пока чистый лист
             </h2>
             <p id="scenario-label" class="mt-2 text-sm leading-6 text-ink/60">
               Маршрут появится после реплики
@@ -412,7 +292,7 @@
             <p id="confidence" class="mt-2 font-mono text-xs">confidence: --</p>
           </section>
           <section class="flex-1 border border-ink/10 bg-white p-5">
-            <h2 class="text-sm font-semibold">Контекст оператору</h2>
+            <h2 class="text-sm font-semibold"><span class="section-number">04 /</span>Если нужен человек</h2>
             <div
               id="operator-context"
               class="mt-3 text-xs leading-5 text-ink/60"
@@ -431,7 +311,7 @@
           </section>
         </aside>
       </div>
-      <footer class="app-footer"><span>Voice Router / Halyk Bank</span><span>Технологии, которые умеют слушать.</span></footer>
+      <footer class="app-footer"><span>Voice Router © 2026</span><span>Меньше шума. Больше понимания.</span><span>Halyk Bank / AI assistant</span></footer>
     </main>
     <script>
       const ui = {
