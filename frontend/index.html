@@ -195,7 +195,7 @@
               </button>
             </div>
             <div class="mt-3 flex items-center justify-between">
-              <span id="voice-status" class="text-xs text-ink/55"
+              <span id="voice-status" role="status" aria-live="polite" class="text-xs text-ink/55"
                 >Текстовый канал готов</span
               >
               <button
@@ -439,13 +439,47 @@
           ui.voiceStatus.textContent = `Распознано: ${text}`;
           sendText(text);
         };
-        recognition.onerror = () => {
+        recognition.onerror = (event) => {
           ui.voiceStatus.textContent =
-            "Речь не распознана, используйте текстовый канал";
+            event.error === "not-allowed" || event.error === "service-not-allowed"
+              ? "Доступ к голосовому вводу запрещён. Проверьте разрешения сайта в браузере."
+              : "Речь не распознана, используйте текстовый канал";
         };
-        recognition.onend = () =>
+        recognition.onend = () => {
           ui.micButton.classList.remove("bg-mint", "text-white", "pulse-ring");
-        ui.micButton.onclick = () => recognition.start();
+          ui.micButton.disabled = false;
+          if (ui.voiceStatus.textContent === "Слушаю...") {
+            ui.voiceStatus.textContent = "Голосовой ввод завершён. Можно повторить запись.";
+          }
+        };
+        ui.micButton.onclick = async () => {
+          if (ui.micButton.disabled) return;
+          if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+            ui.voiceStatus.textContent =
+              "Для доступа к микрофону откройте сайт через HTTPS или localhost.";
+            return;
+          }
+          ui.micButton.disabled = true;
+          ui.voiceStatus.textContent = "Разрешите доступ к микрофону в браузере...";
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            // SpeechRecognition opens its own audio input; release the permission probe.
+            stream.getTracks().forEach((track) => track.stop());
+            ui.voiceStatus.textContent = "Включаю голосовой ввод...";
+            recognition.start();
+          } catch (error) {
+            ui.micButton.disabled = false;
+            if (error.name === "NotAllowedError" || error.name === "SecurityError") {
+              ui.voiceStatus.textContent =
+                "Доступ к микрофону не разрешён. Разрешите его в настройках сайта и нажмите кнопку снова.";
+            } else if (error.name === "NotFoundError") {
+              ui.voiceStatus.textContent = "Микрофон не найден. Подключите его и попробуйте снова.";
+            } else {
+              ui.voiceStatus.textContent =
+                "Не удалось включить микрофон. Проверьте его доступность или используйте текстовый ввод.";
+            }
+          }
+        };
       } else {
         ui.micButton.disabled = true;
         ui.micButton.classList.add("opacity-40");
