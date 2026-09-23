@@ -21,19 +21,19 @@ class LLMRouter:
             else None
         )
 
-    async def route(self, text: str, history: list[Turn]) -> tuple[RouteDecision, float, str]:
+    async def route(self, text: str, history: list[Turn], language: str | None = None) -> tuple[RouteDecision, float, str]:
         started = time.perf_counter()
         if self.client:
             try:
-                decision = await self._route_with_llm(text, history)
+                decision = await self._route_with_llm(text, history, language)
                 return decision, (time.perf_counter() - started) * 1000, "llm"
             except Exception:
                 # Preserve the voice flow under provider rate limits and network failures.
                 pass
-        decision = self._fallback_route(text, history)
+        decision = self._fallback_route(text, history, language)
         return decision, (time.perf_counter() - started) * 1000, "fallback"
 
-    async def _route_with_llm(self, text: str, history: list[Turn]) -> RouteDecision:
+    async def _route_with_llm(self, text: str, history: list[Turn], language: str | None = None) -> RouteDecision:
         catalog = [{key: item[key] for key in ("scenario_id", "label", "keywords")} for item in self.scenarios]
         prompt = (
             "You route multilingual Halyk Bank voice calls. Select exactly one scenario from this catalog. "
@@ -41,6 +41,8 @@ class LLMRouter:
             "rationale (brief, in caller language), language (ru|kk|mixed|unknown), extracted_parameters "
             "(object), alternatives (max 2 with scenario_id/confidence/label), handoff_recommended.\n"
             f"Catalog: {json.dumps(catalog, ensure_ascii=False)}\n"
+            f"Selected language: {language or 'auto-detect'}. If selected, use this language value. "
+            "For mixed, accept Russian and Kazakh in the same message.\n"
             f"History: {json.dumps([item.model_dump() for item in history], ensure_ascii=False)}\n"
             f"Caller: {text}"
         )
@@ -54,9 +56,11 @@ class LLMRouter:
         decision = RouteDecision.model_validate_json(response.choices[0].message.content or "{}")
         if decision.scenario_id not in self.by_id:
             raise ValueError("Unknown scenario returned by LLM")
+        if language:
+            decision.language = language
         return decision
 
-    def _fallback_route(self, text: str, history: list[Turn]) -> RouteDecision:
+    def _fallback_route(self, text: str, history: list[Turn], language: str | None = None) -> RouteDecision:
         normalized = text.lower()
         words = set(re.findall(r"[\w-]+", normalized, flags=re.UNICODE))
         ranked: list[tuple[int, dict]] = []
@@ -69,7 +73,7 @@ class LLMRouter:
             previous = next((item for item in reversed(history) if item.role == "assistant"), None)
             if previous:
                 selected = self.by_id.get("general_consultation", selected)
-        language = self._detect_language(normalized)
+        language = language or self._detect_language(normalized)
         params = self._extract_parameters(text)
         alternatives = [
             Alternative(scenario_id=item["scenario_id"], confidence=round(max(0.05, min(0.85, other_score / 4)), 2), label=item["label"])

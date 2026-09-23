@@ -28,3 +28,4 @@ class ClientMessage(BaseModel):
     type: Literal["text", "audio", "reset"]
     text: str | None = None
     mime_type: str | None = None
+    language: Literal["ru", "kk", "mixed"] | None = None

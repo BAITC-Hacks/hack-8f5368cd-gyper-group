@@ -66,6 +66,12 @@
       #conversation > div:first-child { font-size: clamp(22px, 2.1vw, 30px); letter-spacing: -.045em; line-height: 1.4; max-width: 420px; }
       .composer { margin: 0 20px 20px; padding: 12px; background: var(--canvas); border: 1px solid #e9eae3; border-radius: 22px; }
       .composer-row { display: flex; align-items: center; gap: 8px; }
+      .language-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 0 10px 10px; border-bottom: 1px solid #e1e4d9; margin-bottom: 4px; }
+      .language-controls label { display: flex; align-items: center; gap: 8px; font-size: 10px; color: #68715b; }
+      .language-controls select { max-width: 100%; border: 0; border-radius: 4px; padding: 6px; background: #e8eddf; color: #34372e; font: inherit; font-size: 11px; }
+      .language-controls select:focus-visible { outline: 2px solid #5e7338; outline-offset: 2px; }
+      .language-controls [hidden] { display: none; }
+      #language-hint { display: block; margin-top: 4px; font-size: 10px; line-height: 1.6; color: #73796a; }
       #text-input { border: 0; background: transparent; padding: 14px 10px; font-size: 13px; }
       #text-input::placeholder { color: #74796c; }
       #send-button { background: var(--ink); color: white; border-radius: 50%; width: 44px; height: 44px; }
@@ -198,6 +204,21 @@
             </div>
           </div>
           <div class="composer">
+            <div class="language-controls">
+              <label for="language-select">Язык диалога
+                <select id="language-select">
+                  <option value="ru">Русский</option>
+                  <option value="kk">Қазақша</option>
+                  <option value="mixed">Смешанный · RU + KZ</option>
+                </select>
+              </label>
+              <label id="mixed-voice-control" for="mixed-voice-select" hidden>Язык записи
+                <select id="mixed-voice-select">
+                  <option value="ru-RU">Русский</option>
+                  <option value="kk-KZ">Қазақша</option>
+                </select>
+              </label>
+            </div>
             <div class="composer-row">
               <input
                 id="text-input"
@@ -220,6 +241,7 @@
               </button>
             </div>
             <div class="composer-hint">
+              <span id="language-hint" role="status" aria-live="polite">Русский: голосовой ввод и ответы на русском.</span>
               <span id="voice-status" role="status" aria-live="polite" class="text-xs text-ink/55"
                 >Голос можно превратить в текст и отредактировать</span
               >
@@ -340,6 +362,24 @@
       let socket;
       let turnCount = 0;
       let recognition;
+      const languageSelect = document.getElementById("language-select");
+      const mixedVoiceSelect = document.getElementById("mixed-voice-select");
+      const mixedVoiceControl = document.getElementById("mixed-voice-control");
+      const languageHint = document.getElementById("language-hint");
+      function updateLanguage() {
+        const language = languageSelect.value;
+        mixedVoiceControl.hidden = language !== "mixed";
+        ui.textInput.lang = language === "kk" ? "kk" : "ru";
+        ui.textInput.placeholder = language === "kk" ? "Не туралы сұрағыңыз келеді?" : "О чём хотите спросить?";
+        languageHint.textContent = {
+          ru: "Русский: голосовой ввод и ответы на русском.",
+          kk: "Қазақша: дауыспен енгізу және жауаптар қазақ тілінде.",
+          mixed: "Можно смешивать русский и казахский. Для каждой записи выберите язык микрофона; ответы — на русском.",
+        }[language];
+        if (recognition) recognition.lang = language === "mixed" ? mixedVoiceSelect.value : language === "kk" ? "kk-KZ" : "ru-RU";
+      }
+      languageSelect.onchange = updateLanguage;
+      mixedVoiceSelect.onchange = updateLanguage;
       const wsUrl = `${location.protocol === "https:" ? "wss" : "ws"}://${location.hostname}:8000/ws/voice`;
       const escapeHtml = (text) =>
         text.replace(
@@ -376,7 +416,7 @@
       function sendText(text) {
         if (!text.trim() || socket.readyState !== WebSocket.OPEN) return;
         addMessage("user", text);
-        socket.send(JSON.stringify({ type: "text", text }));
+        socket.send(JSON.stringify({ type: "text", text, language: languageSelect.value }));
         ui.textInput.value = "";
         ui.sendButton.disabled = true;
         ui.sendButton.classList.add("opacity-40");
@@ -448,7 +488,7 @@
         window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechRecognition) {
         recognition = new SpeechRecognition();
-        recognition.lang = "ru-RU";
+        updateLanguage();
         recognition.interimResults = false;
         recognition.onstart = () => {
           ui.voiceStatus.textContent = "Слушаю...";
@@ -467,11 +507,15 @@
           ui.voiceStatus.textContent =
             event.error === "not-allowed" || event.error === "service-not-allowed"
               ? "Доступ к голосовому вводу запрещён. Проверьте разрешения сайта в браузере."
-              : "Речь не распознана, используйте текстовый канал";
+              : event.error === "language-not-supported"
+                ? "Браузер не поддерживает распознавание выбранного языка. Используйте текстовый ввод."
+                : "Речь не распознана, используйте текстовый канал";
         };
         recognition.onend = () => {
           ui.micButton.classList.remove("bg-mint", "text-white", "pulse-ring");
           ui.micButton.disabled = false;
+          languageSelect.disabled = false;
+          mixedVoiceSelect.disabled = false;
           if (ui.voiceStatus.textContent === "Слушаю...") {
             ui.voiceStatus.textContent = "Голосовой ввод завершён. Можно повторить запись.";
           }
@@ -484,6 +528,8 @@
             return;
           }
           ui.micButton.disabled = true;
+          languageSelect.disabled = true;
+          mixedVoiceSelect.disabled = true;
           ui.voiceStatus.textContent = "Разрешите доступ к микрофону в браузере...";
           try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -493,6 +539,8 @@
             recognition.start();
           } catch (error) {
             ui.micButton.disabled = false;
+            languageSelect.disabled = false;
+            mixedVoiceSelect.disabled = false;
             if (error.name === "NotAllowedError" || error.name === "SecurityError") {
               ui.voiceStatus.textContent =
                 "Доступ к микрофону не разрешён. Разрешите его в настройках сайта и нажмите кнопку снова.";

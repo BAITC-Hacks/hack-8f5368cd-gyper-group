@@ -39,7 +39,7 @@ def create_router(router: LLMRouter, executor: ScenarioExecutor, stt: STTService
                         warnings.append("STT provider is not configured. Use the text channel for this demo.")
                         transcript = "Не удалось распознать аудио"
                 context.add_turn("user", transcript)
-                decision, router_ms, mode = await router.route(transcript, list(context.history))
+                decision, router_ms, mode = await router.route(transcript, list(context.history), payload.language)
                 context.record_route(decision.scenario_id, decision.extracted_parameters)
                 response_text, execution_ms = await executor.execute(decision)
                 context.add_turn("assistant", response_text)
